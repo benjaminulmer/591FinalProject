@@ -1,0 +1,8 @@
+#exclude files and directories in top directory
+/*
+
+#include the src
+!/src
+
+#include
+!/.gitignore
