@@ -3,23 +3,35 @@
 #include <iostream>
 
 Program::Program() {
-	// TODO Auto-generated constructor stub
-
+	window = nullptr;
+	renderEngine = nullptr;
 }
 
 Program::~Program() {
-	// TODO Auto-generated destructor stub
 }
 
+// Error callback for glfw errors
 void Program::error(int error, const char* description) {
-
+	std::cerr << description << std::endl;
 }
 
+// Called to start the program. Conducts set up then enters the main loop
 void Program::start() {
-	inputHandler = InputHandler();
+	setupWindow();
+	renderEngine = new RenderEngine(window);
 
+	GLenum err = glewInit();
+	if (glewInit() != GLEW_OK) {
+		std::cerr << glewGetErrorString(err) << std::endl;
+	}
+
+	mainLoop();
+}
+
+// Creates GLFW window for the program and sets callbacks for input
+void Program::setupWindow() {
 	glfwSetErrorCallback(Program::error);
-	if (!glfwInit()) {
+	if (glfwInit() == 0) {
 		exit(EXIT_FAILURE);
 	}
 
@@ -32,7 +44,18 @@ void Program::start() {
 	glfwSetCursorPosCallback(window, InputHandler::motion);
 	glfwSetScrollCallback(window, InputHandler::scroll);
 	glfwSetWindowSizeCallback(window, InputHandler::reshape);
-
-	int n;
-	std::cin >> n;
 }
+
+// Main loop
+void Program::mainLoop() {
+	while(!glfwWindowShouldClose(window)) {
+		glfwPollEvents();
+		renderEngine->render();
+		glfwSwapBuffers(window);
+	}
+
+	// Clean up, program needs to exit
+	glfwDestroyWindow(window);
+	glfwTerminate();
+}
+
