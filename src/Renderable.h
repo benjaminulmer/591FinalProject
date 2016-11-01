@@ -1,4 +1,5 @@
 #pragma once
+
 #include <glm/glm.hpp>
 #include <vector>
 #include <GL/glew.h>
@@ -11,13 +12,12 @@ public:
 
 	std::vector<glm::vec3> verts;
 	std::vector<glm::vec2> uvs;
-	std::vector<glm::vec3> norms;
+	std::vector<glm::vec3> normals;
 	std::vector<GLushort> drawFaces;
 	std::vector<GLuint> faces; // TODO kill
-	std::vector<glm::vec3> raw_verts;
-	GLuint vbo;
+	std::vector<glm::vec3> rawVerts;
+
 	GLuint vao;
-	GLuint indexBuffer;
 
 	glm::vec3 getDimensions();
 };

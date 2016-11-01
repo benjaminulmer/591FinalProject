@@ -1,7 +1,5 @@
 #include "Program.h"
 
-#include <iostream>
-
 Program::Program() {
 	window = nullptr;
 	renderEngine = nullptr;
@@ -18,12 +16,12 @@ void Program::error(int error, const char* description) {
 // Called to start the program. Conducts set up then enters the main loop
 void Program::start() {
 	setupWindow();
-	renderEngine = new RenderEngine(window);
-
 	GLenum err = glewInit();
 	if (glewInit() != GLEW_OK) {
 		std::cerr << glewGetErrorString(err) << std::endl;
 	}
+
+	renderEngine = new RenderEngine(window);
 
 	mainLoop();
 }

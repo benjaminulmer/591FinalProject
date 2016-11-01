@@ -17,9 +17,9 @@ Renderable* ContentLoading::createRenderable(std::string modelFile) {
 	std::vector<glm::vec3> indexed_normals;
 	ContentLoading::indexVBO(verts, uvs, normals, indices, indexed_vertices, indexed_uvs, indexed_normals);
 	r->verts = indexed_vertices;
-	r->raw_verts = raw_verts;
+	r->rawVerts = raw_verts;
 	r->uvs = indexed_uvs;
-	r->norms = indexed_normals;
+	r->normals = indexed_normals;
 	r->drawFaces = indices;
 	r->faces = faces;
 

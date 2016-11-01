@@ -1,10 +1,7 @@
 #include "Renderable.h"
 
-Renderable::Renderable() {
-	vao = 0;
-	vbo = 0;
-	indexBuffer = 0;
-}
+Renderable::Renderable() :
+	vao(0) {}
 
 Renderable::~Renderable() {
 }
