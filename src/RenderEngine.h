@@ -15,17 +15,25 @@ public:
 	virtual ~RenderEngine();
 
 	void render();
+	void updateView(glm::mat4 value);
+	void updateAspectRatio();
 
 private:
 	GLFWwindow* window;
 
-	GLuint program;
-	GLuint planeVertexArray;
+	GLuint mainProgram;
+	GLuint lightProgram;
 
-	glm::mat4 modelView;
+	// Temp
+	GLuint planeVertexArray;
+	//
+
+	glm::mat4 view;
 	glm::mat4 projection;
-	glm::vec3 lightPosition;
+	glm::vec3 lightPos;
 
 	float aspectRatio = 1;
+
+	void renderLight();
 };
 

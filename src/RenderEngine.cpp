@@ -3,7 +3,11 @@
 RenderEngine::RenderEngine(GLFWwindow* window) :
 	window(window) {
 
-	program = ShaderTools::compileShaders("./shaders/mesh.vert", "./shaders/mesh.frag");
+	mainProgram = ShaderTools::compileShaders("./shaders/mesh.vert", "./shaders/mesh.frag");
+	lightProgram = ShaderTools::compileShaders("./shaders/light.vert", "./shaders/light.frag");
+
+	lightPos = glm::vec3(0.0, 0.8, 0.0);
+	projection = glm::perspective(45.0f, aspectRatio, 0.01f, 100.0f);
 
 	//create plane geometry
 	static const GLfloat quadData[] = {
@@ -34,26 +38,40 @@ RenderEngine::~RenderEngine() {
 // Stub for render call. Will be expanded
 void RenderEngine::render() {
 	glBindVertexArray(planeVertexArray);
+	glUseProgram(mainProgram);
 
-	glUseProgram(program);
-
-	//scene matrices and camera setup
-	glm::vec3 eye(0.0f,0.3f, 2.0f);
-	glm::vec3 up(0.0f, 1.0f, 0.0f);
-	glm::vec3 center(0.0f, 0.0f, 0.0f);
-
-	modelView = glm::lookAt(eye, center, up);
-
-	glm::mat4 identity(1.0f);
-	projection = glm::perspective(45.0f, aspectRatio, 0.01f, 100.0f);
+	glm::mat4 model = glm::mat4();
+	glm::mat4 modelView = view * model;
 
 	//Uniform variables
-	glUniformMatrix4fv(glGetUniformLocation(program, "modelView"), 1, GL_FALSE, glm::value_ptr(modelView));
-	glUniformMatrix4fv(glGetUniformLocation(program, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
-
-	glUniform3fv(glGetUniformLocation(program, "lightPosition"), 1, glm::value_ptr(lightPosition));
+	glUniformMatrix4fv(glGetUniformLocation(mainProgram, "modelView"), 1, GL_FALSE, glm::value_ptr(modelView));
+	glUniformMatrix4fv(glGetUniformLocation(mainProgram, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+	glUniform3fv(glGetUniformLocation(mainProgram, "lightPos"), 1, glm::value_ptr(lightPos));
 
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-
 	glBindVertexArray(0);
+
+	renderLight();
+}
+
+void RenderEngine::renderLight() {
+	glUseProgram(lightProgram);
+
+	//uniform variables
+	glUniformMatrix4fv(glGetUniformLocation(lightProgram, "view"), 1, GL_FALSE, glm::value_ptr(view));
+	glUniformMatrix4fv(glGetUniformLocation(lightProgram, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+	glUniform3fv(glGetUniformLocation(lightProgram, "lightPos"), 1, glm::value_ptr(lightPos));
+
+	glPointSize(30.0f);
+	glDrawArrays(GL_POINTS, 0, 1);
+}
+
+// Updates view matrix to new value provided
+void RenderEngine::updateView(glm::mat4 newView) {
+	view = newView;
+}
+
+// Updates aspectRatio to new value provided
+void RenderEngine::updateAspectRatio() {
+	//TODO do this
 }

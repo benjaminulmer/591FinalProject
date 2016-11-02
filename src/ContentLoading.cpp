@@ -93,12 +93,12 @@ bool ContentLoading::loadOBJ(
 	FILE * file; 
 	file = fopen(path, "r");
 	if( file == NULL ){
-		printf("Impossible to open the file ! Are you in the right path ? See Tutorial 1 for details\n");
+		printf("Cannot open file. Check path.");
 		getchar();
 		return false;
 	}
 
-	while( 1 ){
+	while(true){
 
 		char lineHeader[128];
 		// read the first word of the line
