@@ -47,14 +47,17 @@ void Program::setupWindow() {
 // Main loop
 void Program::mainLoop() {
 
-	glm::vec3 eye(0.0f,0.3f, 2.0f);
+	glm::vec3 eye(0.0f,0.3f, 20.0f);
 	glm::vec3 up(0.0f, 1.0f, 0.0f);
 	glm::vec3 center(0.0f, 0.0f, 0.0f);
 	renderEngine->updateView(glm::lookAt(eye, center, up));
 
+	Renderable* r = ContentLoading::createRenderable("./models/tree.obj");
+	renderEngine->assignBuffers(*r);
+
 	while(!glfwWindowShouldClose(window)) {
 		glfwPollEvents();
-		renderEngine->render();
+		renderEngine->render(*r);
 		glfwSwapBuffers(window);
 	}
 

@@ -6,6 +6,8 @@
 
 #include "InputHandler.h"
 #include "RenderEngine.h"
+#include "Renderable.h"
+#include "ContentLoading.h"
 
 class Program {
 

@@ -7,6 +7,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "ShaderTools.h"
+#include "Renderable.h"
 
 class RenderEngine {
 
@@ -14,8 +15,9 @@ public:
 	RenderEngine(GLFWwindow* window);
 	virtual ~RenderEngine();
 
-	void render();
-	void updateView(glm::mat4 value);
+	void render(const Renderable& renderable);
+	void assignBuffers(Renderable& renderable);
+	void updateView(const glm::mat4& value);
 	void updateAspectRatio();
 
 private:
