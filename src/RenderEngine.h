@@ -26,14 +26,10 @@ private:
 	GLuint mainProgram;
 	GLuint lightProgram;
 
-	// Temp
-	GLuint planeVertexArray;
-	//
-
 	glm::mat4 view;
 	glm::mat4 projection;
-	glm::vec3 lightPos;
 
+	glm::vec3 lightPos;
 	float aspectRatio = 1;
 
 	void renderLight();

@@ -8,27 +8,6 @@ RenderEngine::RenderEngine(GLFWwindow* window) :
 
 	lightPos = glm::vec3(10.0, 10, 0.0);
 	projection = glm::perspective(45.0f, aspectRatio, 0.01f, 100.0f);
-
-	//create plane geometry
-	static const GLfloat quadData[] = {
-						-1.0f, 0.0f, -1.0f,
-						-1.0f, 0.0f, 1.0f,
-						1.0f, 0.0f, -1.0f,
-						1.0f, 0.0f, 1.0f,
-	};
-
-	//passing model attributes to the GPU
-	glGenVertexArrays(1, &planeVertexArray);
-	glBindVertexArray(planeVertexArray);
-
-	GLuint planeVertexBuffer;
-	glGenBuffers(1, &planeVertexBuffer);
-	glBindBuffer(GL_ARRAY_BUFFER, planeVertexBuffer);
-	glBufferData(GL_ARRAY_BUFFER, sizeof (quadData), quadData, GL_STATIC_DRAW);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-	glEnableVertexAttribArray(0);
-
-	glBindVertexArray(0);
 }
 
 RenderEngine::~RenderEngine() {
@@ -58,78 +37,52 @@ void RenderEngine::render(const Renderable& renderable) {
 	renderLight();
 }
 
+// Assigns and binds buffers for a renderable (sends it to the GPU)
 void RenderEngine::assignBuffers(Renderable& renderable) {
 	GLuint vertexBuffer;
-	GLuint uvBuffer;
 	GLuint normalBuffer;
+	GLuint uvBuffer;
 	GLuint indexBuffer;
-	GLuint vao;
-
-	glGenVertexArrays(1, &vao);			//vao
-	glGenBuffers(1, &vertexBuffer);		//vertices vbo
-	glGenBuffers(1, &uvBuffer);
-	glGenBuffers(1, &normalBuffer);		//color vbo
-	glGenBuffers(1, &indexBuffer);
 
 	std::vector<glm::vec3> vertices = renderable.verts;
-	std::vector<glm::vec2> uvs = renderable.uvs;
 	std::vector<glm::vec3> normals = renderable.normals;
+	std::vector<glm::vec2> uvs = renderable.uvs;
 	std::vector<unsigned short> faces = renderable.drawFaces;
 
-	glBindVertexArray(vao);
+	// Bind attribute array
+	glGenVertexArrays(1, &renderable.vao);
+	glBindVertexArray(renderable.vao);
 
+	// Vertex buffer
+	glGenBuffers(1, &vertexBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3)*vertices.size(), vertices.data(), GL_STATIC_DRAW);	//buffering vertex data
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+	glEnableVertexAttribArray(0);
 
-	glBindBuffer(GL_ARRAY_BUFFER, uvBuffer);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec2)*uvs.size(), uvs.data(), GL_STATIC_DRAW);	//buffering uv data
-
+	// Normal buffer
+	glGenBuffers(1, &normalBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, normalBuffer);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3)*normals.size(), normals.data(), GL_STATIC_DRAW);		//buffering normal data
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+	glEnableVertexAttribArray(1);
 
+	// UV buffer
+	glGenBuffers(1, &uvBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, uvBuffer);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec2)*uvs.size(), uvs.data(), GL_STATIC_DRAW);	//buffering uv data
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
+	glEnableVertexAttribArray(2);
+
+	// Face buffer
+	glGenBuffers(1, &indexBuffer);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned short) * faces.size(), faces.data(), GL_STATIC_DRAW);
 
-	//r->setColourVBO(normalBuffer);
-
-	//bind to shaders
-	glEnableVertexAttribArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
-	glVertexAttribPointer(
-		0,
-		3,
-		GL_FLOAT,
-		GL_FALSE,
-		0,
-		(void*)0);
-
-	glEnableVertexAttribArray(1);
-	glBindBuffer(GL_ARRAY_BUFFER, uvBuffer);
-	glVertexAttribPointer(
-		1,
-		2,
-		GL_FLOAT,
-		GL_FALSE,
-		0,
-		(void*)0);
-
-	glEnableVertexAttribArray(2);
-	glBindBuffer(GL_ARRAY_BUFFER, normalBuffer);
-	glVertexAttribPointer(
-		2,
-		3,
-		GL_FLOAT,
-		GL_FALSE,
-		0,
-		(void*)0);
-
-	renderable.vao = vao;
 	glBindVertexArray(0);
-	glDisableVertexAttribArray(0);
-	glDisableVertexAttribArray(1);
-	glDisableVertexAttribArray(2);
 }
 
+// Renders the current position of the light as a point
 void RenderEngine::renderLight() {
 	glUseProgram(lightProgram);
 
