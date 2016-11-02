@@ -8,6 +8,10 @@ RenderEngine::RenderEngine(GLFWwindow* window) :
 
 	lightPos = glm::vec3(10.0, 10, 0.0);
 	projection = glm::perspective(45.0f, aspectRatio, 0.01f, 100.0f);
+
+	// Default openGL state
+	// If you change state you must change back to default after
+	glEnable(GL_DEPTH_TEST);
 }
 
 RenderEngine::~RenderEngine() {
@@ -16,8 +20,6 @@ RenderEngine::~RenderEngine() {
 
 // Stub for render call. Will be expanded
 void RenderEngine::render(const Renderable& renderable) {
-
-	glEnable(GL_DEPTH_TEST);
 	glClear(GL_DEPTH_BUFFER_BIT );
 
 	glBindVertexArray(renderable.vao);

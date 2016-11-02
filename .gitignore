@@ -1,8 +1,8 @@
 #exclude files and directories in top directory
 /*
 
-#include the src
+#include the following
 !/src
-
-#include
+!/models
+!/shaders
 !/.gitignore
