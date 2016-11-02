@@ -18,11 +18,8 @@ public:
 	void start();
 
 private:
-	RenderEngine* renderEngine;
-
-	int width = 1024;
-	int height = 1024;
 	GLFWwindow* window;
+	RenderEngine* renderEngine;
 
 	static void error(int error, const char* description);
 	void setupWindow();

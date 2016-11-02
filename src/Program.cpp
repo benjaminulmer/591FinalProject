@@ -22,7 +22,6 @@ void Program::start() {
 	}
 
 	renderEngine = new RenderEngine(window);
-
 	mainLoop();
 }
 
@@ -34,7 +33,7 @@ void Program::setupWindow() {
 	}
 
 	glfwWindowHint(GLFW_SAMPLES, 16);
-	window = glfwCreateWindow(width, height, "OpenGL Window", NULL, NULL);
+	window = glfwCreateWindow(1024, 1024, "Mia & Ben 591", NULL, NULL);
 	glfwMakeContextCurrent(window);
 
 	glfwSetKeyCallback(window, InputHandler::key);

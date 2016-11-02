@@ -27,9 +27,9 @@ Renderable* ContentLoading::createRenderable(std::string modelFile) {
 }
 
 bool ContentLoading::getSimilarVertexIndex_fast( 
-	PackedVertex & packed, 
-	std::map<PackedVertex,unsigned short> & VertexToOutIndex,
-	unsigned short & result)
+		PackedVertex & packed,
+		std::map<PackedVertex,unsigned short> & VertexToOutIndex,
+		unsigned short & result)
 {
 	std::map<PackedVertex,unsigned short>::iterator it = VertexToOutIndex.find(packed);
 	if ( it == VertexToOutIndex.end() ){
@@ -41,14 +41,14 @@ bool ContentLoading::getSimilarVertexIndex_fast(
 }
 
 void ContentLoading::indexVBO(
-	std::vector<glm::vec3> & in_vertices,
-	std::vector<glm::vec2> & in_uvs,
-	std::vector<glm::vec3> & in_normals,
+		std::vector<glm::vec3> & in_vertices,
+		std::vector<glm::vec2> & in_uvs,
+		std::vector<glm::vec3> & in_normals,
 
-	std::vector<unsigned short> & out_indices,
-	std::vector<glm::vec3> & out_vertices,
-	std::vector<glm::vec2> & out_uvs,
-	std::vector<glm::vec3> & out_normals)
+		std::vector<unsigned short> & out_indices,
+		std::vector<glm::vec3> & out_vertices,
+		std::vector<glm::vec2> & out_uvs,
+		std::vector<glm::vec3> & out_normals)
 {
 	std::map<PackedVertex,unsigned short> VertexToOutIndex;
 
@@ -76,12 +76,12 @@ void ContentLoading::indexVBO(
 }
 
 bool ContentLoading::loadOBJ(
-	const char * path, 
-	std::vector<glm::vec3> & out_vertices, 
-	std::vector<glm::vec2> & out_uvs,
-	std::vector<glm::vec3> & out_normals,
-	std::vector<GLuint> & out_faces,
-	std::vector<glm::vec3> & raw_verts)
+		const char * path,
+		std::vector<glm::vec3> & out_vertices,
+		std::vector<glm::vec2> & out_uvs,
+		std::vector<glm::vec3> & out_normals,
+		std::vector<GLuint> & out_faces,
+		std::vector<glm::vec3> & raw_verts)
 {
 	printf("Loading OBJ file %s...\n", path);
 

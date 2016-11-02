@@ -1,55 +1,5 @@
 #include "ShaderTools.h"
 
-unsigned long ShaderTools::getFileLength(std::ifstream& file) {
-	if (!file.good()) return 0;
-
-	file.seekg(0, std::ios::end);
-	unsigned long len = file.tellg();
-	file.seekg(std::ios::beg);
-
-	return len;
-}
-
-GLchar* ShaderTools::loadshader(std::string filename) {
-	std::ifstream file;
-	file.open(filename.c_str(), std::ios::in); // opens as ASCII!
-	if (!file) return NULL;
-
-	unsigned long len = getFileLength(file);
-
-	if (len == 0) return NULL; // Error: Empty File
-
-	GLchar* ShaderSource = 0;
-
-	ShaderSource = new char[len + 1];
-
-	if (ShaderSource == 0) return NULL; // can't reserve memoryf
-
-	// len isn't always strlen cause some characters are stripped in ascii read...
-	// it is important to 0-terminate the real length later, len is just max possible value...
-	ShaderSource[len] = 0;
-
-	unsigned int i = 0;
-	while ( file.good() ) {
-		ShaderSource[i] = file.get(); // get character from file.
-		if (!file.eof())
-			i++;
-	}
-
-	ShaderSource[i] = 0; // 0-terminate it at the correct position
-
-	file.close();
-
-	return ShaderSource; // No Error
-}
-
-void ShaderTools::unloadshader( GLchar** ShaderSource ) {
-	if (*ShaderSource != 0) {
-		delete[] * ShaderSource;
-	}
-	*ShaderSource = 0;
-}
-
 GLuint ShaderTools::compileShaders(const char* vertexFilename, const char* fragmentFilename) {
 	GLuint vertex_shader;
 	GLuint fragment_shader;
@@ -114,3 +64,52 @@ GLuint ShaderTools::compileShaders(const char* vertexFilename, const char* fragm
 	return program;
 }
 
+unsigned long ShaderTools::getFileLength(std::ifstream& file) {
+	if (!file.good()) return 0;
+
+	file.seekg(0, std::ios::end);
+	unsigned long len = file.tellg();
+	file.seekg(std::ios::beg);
+
+	return len;
+}
+
+GLchar* ShaderTools::loadshader(std::string filename) {
+	std::ifstream file;
+	file.open(filename.c_str(), std::ios::in); // opens as ASCII!
+	if (!file) return NULL;
+
+	unsigned long len = getFileLength(file);
+
+	if (len == 0) return NULL; // Error: Empty File
+
+	GLchar* ShaderSource = 0;
+
+	ShaderSource = new char[len + 1];
+
+	if (ShaderSource == 0) return NULL; // can't reserve memoryf
+
+	// len isn't always strlen cause some characters are stripped in ascii read...
+	// it is important to 0-terminate the real length later, len is just max possible value...
+	ShaderSource[len] = 0;
+
+	unsigned int i = 0;
+	while ( file.good() ) {
+		ShaderSource[i] = file.get(); // get character from file.
+		if (!file.eof())
+			i++;
+	}
+
+	ShaderSource[i] = 0; // 0-terminate it at the correct position
+
+	file.close();
+
+	return ShaderSource; // No Error
+}
+
+void ShaderTools::unloadshader( GLchar** ShaderSource ) {
+	if (*ShaderSource != 0) {
+		delete[] * ShaderSource;
+	}
+	*ShaderSource = 0;
+}
