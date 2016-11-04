@@ -3,9 +3,11 @@
 Program::Program() {
 	window = nullptr;
 	renderEngine = nullptr;
+	camera = nullptr;
 }
 
 Program::~Program() {
+	// nothing to do here, end of mainLoop performs clean up
 }
 
 // Error callback for glfw errors

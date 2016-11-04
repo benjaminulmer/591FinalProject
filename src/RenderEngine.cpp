@@ -18,7 +18,7 @@ RenderEngine::RenderEngine(GLFWwindow* window) :
 }
 
 RenderEngine::~RenderEngine() {
-	// TODO Auto-generated destructor stub
+	// nothing to do here, program will clean up window pointer
 }
 
 // Stub for render call. Will be expanded
@@ -58,11 +58,6 @@ void RenderEngine::renderLight() {
 
 // Assigns and binds buffers for a renderable (sends it to the GPU)
 void RenderEngine::assignBuffers(Renderable& renderable) {
-	GLuint vertexBuffer;
-	GLuint normalBuffer;
-	GLuint uvBuffer;
-	GLuint indexBuffer;
-
 	std::vector<glm::vec3> vertices = renderable.verts;
 	std::vector<glm::vec3> normals = renderable.normals;
 	std::vector<glm::vec2> uvs = renderable.uvs;
@@ -73,29 +68,29 @@ void RenderEngine::assignBuffers(Renderable& renderable) {
 	glBindVertexArray(renderable.vao);
 
 	// Vertex buffer
-	glGenBuffers(1, &vertexBuffer);
-	glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
+	glGenBuffers(1, &renderable.vertexBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, renderable.vertexBuffer);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3)*vertices.size(), vertices.data(), GL_STATIC_DRAW);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 	glEnableVertexAttribArray(0);
 
 	// Normal buffer
-	glGenBuffers(1, &normalBuffer);
-	glBindBuffer(GL_ARRAY_BUFFER, normalBuffer);
+	glGenBuffers(1, &renderable.normalBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, renderable.normalBuffer);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3)*normals.size(), normals.data(), GL_STATIC_DRAW);
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 	glEnableVertexAttribArray(1);
 
 	// UV buffer
-	glGenBuffers(1, &uvBuffer);
-	glBindBuffer(GL_ARRAY_BUFFER, uvBuffer);
+	glGenBuffers(1, &renderable.uvBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, renderable.uvBuffer);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec2)*uvs.size(), uvs.data(), GL_STATIC_DRAW);
 	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
 	glEnableVertexAttribArray(2);
 
 	// Face buffer
-	glGenBuffers(1, &indexBuffer);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
+	glGenBuffers(1, &renderable.indexBuffer);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, renderable.indexBuffer);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned short) * faces.size(), faces.data(), GL_STATIC_DRAW);
 
 	glBindVertexArray(0);

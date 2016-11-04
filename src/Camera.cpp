@@ -10,9 +10,10 @@ Camera::Camera() {
 }
 
 Camera::~Camera() {
-	// TODO Auto-generated destructor stub
+	// nothing to do here
 }
 
+// Gets view matrix for the current camera
 glm::mat4 Camera::getView() {
 	glm::vec3 eyeTemp = glm::rotateY(eye, -longitudeRotRad);
 	eyeTemp = glm::rotate(eyeTemp, latitudeRotRad, glm::cross(eyeTemp, glm::vec3(0.0, 1.0, 0.0)));
@@ -20,20 +21,23 @@ glm::mat4 Camera::getView() {
 	return glm::lookAt(eyeTemp, centre, up);
 }
 
+// Rotates camera along longitudinal axis (spherical coords)
 void Camera::updateLongitudeRotation(float rad) {
 	longitudeRotRad += rad * M_PI/180;
 }
 
+// Rotates camera along latitudinal axis (spherical coords)
 void Camera::updateLatitudeRotation(float rad) {
 	latitudeRotRad += rad * M_PI/180;
-	if (latitudeRotRad > M_PI/2 - 0.1f) {
-		latitudeRotRad = M_PI/2 - 0.1f;
+	if (latitudeRotRad > M_PI/2 - 0.01f) {
+		latitudeRotRad = M_PI/2 - 0.01f;
 	}
-	else if (latitudeRotRad < -M_PI/2 + 0.1f) {
-		latitudeRotRad = -M_PI/2 + 0.1f;
+	else if (latitudeRotRad < -M_PI/2 + 0.01f) {
+		latitudeRotRad = -M_PI/2 + 0.01f;
 	}
 }
 
+// Update camera eye position by specified value
 void Camera::updatePosition(glm::vec3 value) {
 	eye += value;
 }
