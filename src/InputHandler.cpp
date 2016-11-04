@@ -28,13 +28,11 @@ void InputHandler::motion(GLFWwindow* window, double x, double y) {
 	dx = (x - mouseOldX);
 	dy = (y - mouseOldY);
 
-	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_1))
-	{
+	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_1)) {
 		camera->updateLongitudeRotation(dx * 0.5f);
-		//rotate_y += dx * 0.5f;
+		camera->updateLatitudeRotation(dy * 0.5f);
 	}
-	else if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_2))
-	{
+	else if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_2)) {
 		//translate_z += dy * 0.03f;
 	}
 

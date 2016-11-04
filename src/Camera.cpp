@@ -14,20 +14,26 @@ Camera::~Camera() {
 }
 
 glm::mat4 Camera::getView() {
-
-	float angleDeg = longitudeRotRad * M_PI/180;
-	glm::vec3 eyeTemp = glm::rotateY(eye, angleDeg);
-	//glm::rotate()
+	glm::vec3 eyeTemp = glm::rotateY(eye, -longitudeRotRad);
+	eyeTemp = glm::rotate(eyeTemp, latitudeRotRad, glm::cross(eyeTemp, glm::vec3(0.0, 1.0, 0.0)));
 
 	return glm::lookAt(eyeTemp, centre, up);
 }
 
 void Camera::updateLongitudeRotation(float rad) {
-	longitudeRotRad += rad;
+	longitudeRotRad += rad * M_PI/180;
 }
 
+#include <iostream>
+
 void Camera::updateLatitudeRotation(float rad) {
-	latitudeRotRad += rad;
+	latitudeRotRad += rad * M_PI/180;
+	if (latitudeRotRad > M_PI/2 - 0.1f) {
+		latitudeRotRad = M_PI/2 - 0.1f;
+	}
+	else if (latitudeRotRad < -M_PI/2 + 0.1f) {
+		latitudeRotRad = -M_PI/2 + 0.1f;
+	}
 }
 
 void Camera::updatePosition(glm::vec3 value) {
