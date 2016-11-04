@@ -14,6 +14,7 @@ RenderEngine::RenderEngine(GLFWwindow* window) :
 	// Default openGL state
 	// If you change state you must change back to default after
 	glEnable(GL_DEPTH_TEST);
+	glClearColor(0.3, 0.3, 0.4, 0.0);
 }
 
 RenderEngine::~RenderEngine() {
