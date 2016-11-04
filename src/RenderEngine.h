@@ -17,8 +17,9 @@ public:
 
 	void render(const Renderable& renderable);
 	void assignBuffers(Renderable& renderable);
-	void updateView(const glm::mat4& value);
-	void updateAspectRatio();
+	void setView(const glm::mat4& value);
+	void setAspectRatio();
+	void updateLightPos(glm::vec3 add);
 
 private:
 	GLFWwindow* window;

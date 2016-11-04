@@ -6,7 +6,7 @@ RenderEngine::RenderEngine(GLFWwindow* window) :
 	mainProgram = ShaderTools::compileShaders("./shaders/mesh.vert", "./shaders/mesh.frag");
 	lightProgram = ShaderTools::compileShaders("./shaders/light.vert", "./shaders/light.frag");
 
-	lightPos = glm::vec3(10.0, 10, 0.0);
+	lightPos = glm::vec3(0.0, 10.0, 0.0);
 	projection = glm::perspective(45.0f, aspectRatio, 0.01f, 100.0f);
 
 	// Default openGL state
@@ -21,6 +21,7 @@ RenderEngine::~RenderEngine() {
 // Stub for render call. Will be expanded
 void RenderEngine::render(const Renderable& renderable) {
 	glClear(GL_DEPTH_BUFFER_BIT ); // TODO Currently done here. Needs to be moved up so only done once per frame
+	glClear(GL_COLOR_BUFFER_BIT);
 
 	glBindVertexArray(renderable.vao);
 	glUseProgram(mainProgram);
@@ -98,11 +99,16 @@ void RenderEngine::assignBuffers(Renderable& renderable) {
 }
 
 // Updates view matrix to new value provided
-void RenderEngine::updateView(const glm::mat4& newView) {
+void RenderEngine::setView(const glm::mat4& newView) {
 	view = newView;
 }
 
 // Updates aspectRatio to new value provided
-void RenderEngine::updateAspectRatio() {
+void RenderEngine::setAspectRatio() {
 	//TODO do this
+}
+
+// Updates lightPos by specified value
+void RenderEngine::updateLightPos(glm::vec3 add) {
+	lightPos += add;
 }

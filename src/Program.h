@@ -8,6 +8,7 @@
 #include "RenderEngine.h"
 #include "Renderable.h"
 #include "ContentLoading.h"
+#include "Camera.h"
 
 class Program {
 
@@ -20,6 +21,7 @@ public:
 private:
 	GLFWwindow* window;
 	RenderEngine* renderEngine;
+	Camera* camera;
 
 	static void error(int error, const char* description);
 	void setupWindow();
