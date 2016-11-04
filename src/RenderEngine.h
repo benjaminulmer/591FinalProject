@@ -18,11 +18,13 @@ public:
 	void render(const Renderable& renderable);
 	void assignBuffers(Renderable& renderable);
 	void setView(const glm::mat4& value);
-	void setAspectRatio();
+	void setWindowSize(int width, int height);
 	void updateLightPos(glm::vec3 add);
 
 private:
 	GLFWwindow* window;
+	int width;
+	int height;
 
 	GLuint mainProgram;
 	GLuint lightProgram;
@@ -31,7 +33,6 @@ private:
 	glm::mat4 projection;
 
 	glm::vec3 lightPos;
-	float aspectRatio = 1;
 
 	void renderLight();
 };

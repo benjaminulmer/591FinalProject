@@ -3,11 +3,13 @@
 RenderEngine::RenderEngine(GLFWwindow* window) :
 	window(window) {
 
+	glfwGetWindowSize(window, &width, &height);
+
 	mainProgram = ShaderTools::compileShaders("./shaders/mesh.vert", "./shaders/mesh.frag");
 	lightProgram = ShaderTools::compileShaders("./shaders/light.vert", "./shaders/light.frag");
 
 	lightPos = glm::vec3(0.0, 10.0, 0.0);
-	projection = glm::perspective(45.0f, aspectRatio, 0.01f, 100.0f);
+	projection = glm::perspective(45.0f, (float)width/height, 0.01f, 100.0f);
 
 	// Default openGL state
 	// If you change state you must change back to default after
@@ -98,14 +100,17 @@ void RenderEngine::assignBuffers(Renderable& renderable) {
 	glBindVertexArray(0);
 }
 
-// Updates view matrix to new value provided
+// Sets view matrix to new value provided
 void RenderEngine::setView(const glm::mat4& newView) {
 	view = newView;
 }
 
-// Updates aspectRatio to new value provided
-void RenderEngine::setAspectRatio() {
-	//TODO do this
+// Sets projection and viewport for new width and height
+void RenderEngine::setWindowSize(int width, int height) {
+	this->width = width;
+	this->height = height;
+	projection = glm::perspective(45.0f, (float)width/height, 0.01f, 100.0f);
+	glViewport(0, 0, width, height);
 }
 
 // Updates lightPos by specified value

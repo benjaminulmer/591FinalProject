@@ -24,8 +24,6 @@ void Camera::updateLongitudeRotation(float rad) {
 	longitudeRotRad += rad * M_PI/180;
 }
 
-#include <iostream>
-
 void Camera::updateLatitudeRotation(float rad) {
 	latitudeRotRad += rad * M_PI/180;
 	if (latitudeRotRad > M_PI/2 - 0.1f) {
