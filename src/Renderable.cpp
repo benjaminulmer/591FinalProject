@@ -14,11 +14,38 @@ Renderable::~Renderable() {
 	glDeleteVertexArrays(1, &vao);
 }
 
+// Prints edge buffer to console. For debugging and testing only
+void Renderable::show() {
+	int i = 0;
+	for (std::list<Node> l : edgeBuffer) {
+		std::cout << "V" << i;
+		for (Node n : l) {
+			std::cout << " -> " << n.vertex;
+		}
+		std::cout << std::endl;
+		i++;
+	}
+}
+
+// Inserts edge into edge buffer only if not already present
+void Renderable::insertEdge(unsigned int vertex1, unsigned int vertex2) {
+	bool found = false;
+	for (Node n : edgeBuffer[vertex1]) {
+		if (n.vertex == vertex2) {
+			found = true;
+			break;
+		}
+	}
+	if (!found) {
+		edgeBuffer[vertex1].push_back(Node(vertex2));
+	}
+}
+
 // Initialize edge buffer data structure
 void Renderable::initEdgeBuffer() {
-	edgeBuffer = std::vector<std::forward_list<Node>>(verts.size() - 1);
-	for (std::forward_list<Node> l : edgeBuffer) {
-		l = std::forward_list<Node>();
+	edgeBuffer = std::vector<std::list<Node>>(verts.size() - 1);
+	for (std::list<Node> l : edgeBuffer) {
+		l = std::list<Node>();
 	}
 
 	for (unsigned int i = 0; i < faces.size(); i += 3) {
@@ -26,11 +53,12 @@ void Renderable::initEdgeBuffer() {
 		faceVerts[0] = faces[i];
 		faceVerts[1] = faces[i+1];
 		faceVerts[2] = faces[i+2];
-
 		std::sort(faceVerts.begin(), faceVerts.end());
-		std::cout << faceVerts[0] << " : " << faceVerts[1] << " : " << faceVerts[2] << std::endl;
-	}
 
+		insertEdge(faceVerts[0], faceVerts[1]);
+		insertEdge(faceVerts[0], faceVerts[2]);
+		insertEdge(faceVerts[1], faceVerts[2]);
+	}
 }
 
 // Returns dimensions of object (bounding box dimensions)

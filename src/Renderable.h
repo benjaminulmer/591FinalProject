@@ -3,7 +3,7 @@
 #include <GL/glew.h>
 #include <glm/glm.hpp>
 #include <vector>
-#include <forward_list>
+#include <list>
 #include <algorithm>
 
 struct Node {
@@ -36,7 +36,11 @@ public:
 	void initEdgeBuffer();
 	glm::vec3 getDimensions();
 
+	void show();
+
 private:
-	std::vector<std::forward_list<Node>> edgeBuffer;
+	std::vector<std::list<Node>> edgeBuffer;
+
+	void insertEdge(unsigned int vertex1, unsigned int vertex2);
 };
 
