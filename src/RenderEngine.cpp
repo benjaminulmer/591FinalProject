@@ -7,6 +7,7 @@ RenderEngine::RenderEngine(GLFWwindow* window) :
 
 	mainProgram = ShaderTools::compileShaders("./shaders/mesh.vert", "./shaders/mesh.frag");
 	lightProgram = ShaderTools::compileShaders("./shaders/light.vert", "./shaders/light.frag");
+	lineProgram = ShaderTools::compileShaders("./shaders/line.vert", "./shaders/line.frag");
 
 	lightPos = glm::vec3(0.0, 10.0, 0.0);
 	projection = glm::perspective(45.0f, (float)width/height, 0.01f, 100.0f);
@@ -22,7 +23,7 @@ RenderEngine::~RenderEngine() {
 }
 
 // Stub for render call. Will be expanded
-void RenderEngine::render(const Renderable& renderable) {
+void RenderEngine::render(Renderable& renderable) {
 	glClear(GL_DEPTH_BUFFER_BIT ); // TODO Currently done here. Needs to be moved up so only done once per frame
 	glClear(GL_COLOR_BUFFER_BIT);
 
@@ -40,7 +41,60 @@ void RenderEngine::render(const Renderable& renderable) {
 	glDrawElements(GL_TRIANGLES, renderable.drawFaces.size(), GL_UNSIGNED_SHORT, (void*)0);
 	glBindVertexArray(0);
 
+	renderLines(renderable);
 	renderLight();
+}
+
+void RenderEngine::renderLines(Renderable& renderable) {
+	std::vector<std::list<Node*>> edgeBuffer = renderable.getEdgeBuffer();
+	int i = 0;
+	for (std::list<Node*> l : edgeBuffer) {
+		for (Node* n : l) {
+			if (n->front && n->back) {
+
+				// ALL OF THIS IS TEMPORARY
+				/*
+				std::vector<glm::vec3> verts = std::vector<glm::vec3>(2);
+				verts.push_back(renderable.verts[i]);
+				verts.push_back(renderable.verts[n->vertex]);
+
+				GLuint vao, vbo;
+				glGenVertexArrays(1, &vao);
+				glBindVertexArray(vao);
+
+				glGenBuffers(1, &vbo);
+				glBindBuffer(GL_ARRAY_BUFFER, vbo);
+				glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3)*verts.size(), verts.data(), GL_STATIC_DRAW);
+				glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+				glEnableVertexAttribArray(0);
+
+				glBindVertexArray(0);
+
+				// Draw
+				glBindVertexArray(vao);
+				glUseProgram(lineProgram);
+
+				glUniformMatrix4fv(glGetUniformLocation(lineProgram, "view"), 1, GL_FALSE, glm::value_ptr(view));
+				glUniformMatrix4fv(glGetUniformLocation(lineProgram, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+
+				glDrawArrays(GL_LINES, 0, 2);
+
+				// Delete
+				glDeleteBuffers(1, &vbo);
+				glDeleteVertexArrays(1, &vao);
+				*/
+				glUseProgram(lineProgram);
+				glUniformMatrix4fv(glGetUniformLocation(lineProgram, "view"), 1, GL_FALSE, glm::value_ptr(view));
+				glUniformMatrix4fv(glGetUniformLocation(lineProgram, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+				glLineWidth(5.0f);
+				glBegin(GL_LINES);
+				glVertex3f(renderable.verts[i].x, renderable.verts[i].y, renderable.verts[i].z);
+				glVertex3f(renderable.verts[n->vertex].x, renderable.verts[n->vertex].y, renderable.verts[n->vertex].z);
+				glEnd();
+			}
+		}
+		i++;
+	}
 }
 
 // Renders the current position of the light as a point

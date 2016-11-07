@@ -15,7 +15,7 @@ public:
 	RenderEngine(GLFWwindow* window);
 	virtual ~RenderEngine();
 
-	void render(const Renderable& renderable);
+	void render(Renderable& renderable);
 	void assignBuffers(Renderable& renderable);
 	void setView(const glm::mat4& value);
 	void setWindowSize(int width, int height);
@@ -28,12 +28,14 @@ private:
 
 	GLuint mainProgram;
 	GLuint lightProgram;
+	GLuint lineProgram;
 
 	glm::mat4 view;
 	glm::mat4 projection;
 
 	glm::vec3 lightPos;
 
+	void renderLines(Renderable& renderable);
 	void renderLight();
 };
 

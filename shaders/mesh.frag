@@ -8,6 +8,6 @@ in vec3 V;
 
 void main(void) {    	
 	// Diffuse
-	vec3 col = vec3(1.0, 1.0, 0.0);
+	vec3 col = vec3(0.0, 1.0, 0.0);
     colour = vec4(col * ((dot(N, L) +1) / 2), 1.0);
 }

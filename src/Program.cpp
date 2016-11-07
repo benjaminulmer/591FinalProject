@@ -51,7 +51,8 @@ void Program::setupWindow() {
 void Program::mainLoop() {
 	Renderable* r = ContentLoading::createRenderable("./models/tree.obj");
 	r->initEdgeBuffer();
-	r->show();
+	r->populateEdgeBuffer(camera->getPosition());
+	//r->show();
 	renderEngine->assignBuffers(*r);
 
 	while(!glfwWindowShouldClose(window)) {
@@ -60,6 +61,9 @@ void Program::mainLoop() {
 
 		renderEngine->render(*r);
 		glfwSwapBuffers(window);
+
+		r->initEdgeBuffer();
+		r->populateEdgeBuffer(camera->getPosition());
 	}
 
 	// Clean up, program needs to exit
