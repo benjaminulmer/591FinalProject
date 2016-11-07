@@ -6,7 +6,7 @@ Renderable* ContentLoading::createRenderable(std::string modelFile) {
 	std::vector<glm::vec3> verts;
 	std::vector<glm::vec2> uvs;
 	std::vector<glm::vec3> normals;
-	std::vector<GLuint> faces;
+	std::vector<GLushort> faces;
 	std::vector<glm::vec3> raw_verts;
 
 	ContentLoading::loadOBJ(modelFile.c_str(), verts, uvs, normals, faces, raw_verts);
@@ -16,8 +16,8 @@ Renderable* ContentLoading::createRenderable(std::string modelFile) {
 	std::vector<glm::vec2> indexed_uvs;
 	std::vector<glm::vec3> indexed_normals;
 	ContentLoading::indexVBO(verts, uvs, normals, indices, indexed_vertices, indexed_uvs, indexed_normals);
-	r->verts = indexed_vertices;
-	r->rawVerts = raw_verts;
+	r->drawVerts = indexed_vertices;
+	r->verts = raw_verts;
 	r->uvs = indexed_uvs;
 	r->normals = indexed_normals;
 	r->drawFaces = indices;
@@ -80,12 +80,12 @@ bool ContentLoading::loadOBJ(
 		std::vector<glm::vec3> & out_vertices,
 		std::vector<glm::vec2> & out_uvs,
 		std::vector<glm::vec3> & out_normals,
-		std::vector<GLuint> & out_faces,
+		std::vector<GLushort> & out_faces,
 		std::vector<glm::vec3> & raw_verts)
 {
 	printf("Loading OBJ file %s...\n", path);
 
-	std::vector<unsigned int> vertexIndices, uvIndices, normalIndices;
+	std::vector<unsigned short> vertexIndices, uvIndices, normalIndices;
 	std::vector<glm::vec3> temp_vertices; 
 	std::vector<glm::vec2> temp_uvs;
 	std::vector<glm::vec3> temp_normals;

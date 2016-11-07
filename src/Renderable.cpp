@@ -1,9 +1,10 @@
 #include "Renderable.h"
+#include <iostream>
 
 Renderable::Renderable() :
 	vao(0), vertexBuffer(0),
 	normalBuffer(0), uvBuffer(0),
-	indexBuffer(0) {}
+	indexBuffer(0){}
 
 Renderable::~Renderable() {
 	// Remove data from GPU
@@ -13,6 +14,26 @@ Renderable::~Renderable() {
 	glDeleteVertexArrays(1, &vao);
 }
 
+// Initialize edge buffer data structure
+void Renderable::initEdgeBuffer() {
+	edgeBuffer = std::vector<std::forward_list<Node>>(verts.size() - 1);
+	for (std::forward_list<Node> l : edgeBuffer) {
+		l = std::forward_list<Node>();
+	}
+
+	for (unsigned int i = 0; i < faces.size(); i += 3) {
+		std::vector<unsigned int> faceVerts = std::vector<unsigned int>(3);
+		faceVerts[0] = faces[i];
+		faceVerts[1] = faces[i+1];
+		faceVerts[2] = faces[i+2];
+
+		std::sort(faceVerts.begin(), faceVerts.end());
+		std::cout << faceVerts[0] << " : " << faceVerts[1] << " : " << faceVerts[2] << std::endl;
+	}
+
+}
+
+// Returns dimensions of object (bounding box dimensions)
 glm::vec3 Renderable::getDimensions() {
 	float minX, maxX;
 	float minY, maxY;

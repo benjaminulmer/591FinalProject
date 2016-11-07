@@ -50,6 +50,7 @@ void Program::setupWindow() {
 // Main loop
 void Program::mainLoop() {
 	Renderable* r = ContentLoading::createRenderable("./models/tree.obj");
+	r->initEdgeBuffer();
 	renderEngine->assignBuffers(*r);
 
 	while(!glfwWindowShouldClose(window)) {

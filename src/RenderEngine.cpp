@@ -58,10 +58,10 @@ void RenderEngine::renderLight() {
 
 // Assigns and binds buffers for a renderable (sends it to the GPU)
 void RenderEngine::assignBuffers(Renderable& renderable) {
-	std::vector<glm::vec3> vertices = renderable.verts;
+	std::vector<glm::vec3> vertices = renderable.drawVerts;
 	std::vector<glm::vec3> normals = renderable.normals;
 	std::vector<glm::vec2> uvs = renderable.uvs;
-	std::vector<unsigned short> faces = renderable.drawFaces;
+	std::vector<GLushort> faces = renderable.drawFaces;
 
 	// Bind attribute array
 	glGenVertexArrays(1, &renderable.vao);
@@ -91,7 +91,7 @@ void RenderEngine::assignBuffers(Renderable& renderable) {
 	// Face buffer
 	glGenBuffers(1, &renderable.indexBuffer);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, renderable.indexBuffer);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned short) * faces.size(), faces.data(), GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLushort)*faces.size(), faces.data(), GL_STATIC_DRAW);
 
 	glBindVertexArray(0);
 }
