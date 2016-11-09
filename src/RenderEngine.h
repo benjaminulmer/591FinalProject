@@ -9,6 +9,9 @@
 #include "ShaderTools.h"
 #include "Renderable.h"
 
+#include "texture.h"
+#include "lodepng.h"
+
 class RenderEngine {
 
 public:
@@ -20,6 +23,8 @@ public:
 	void setView(const glm::mat4& value);
 	void setWindowSize(int width, int height);
 	void updateLightPos(glm::vec3 add);
+
+	unsigned int loadTexture(std::string filename);
 
 private:
 	GLFWwindow* window;
@@ -33,6 +38,8 @@ private:
 	glm::mat4 projection;
 
 	glm::vec3 lightPos;
+
+	Texture texture;
 
 	void renderLight();
 };

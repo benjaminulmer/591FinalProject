@@ -51,6 +51,7 @@ void Program::setupWindow() {
 void Program::mainLoop() {
 	Renderable* r = ContentLoading::createRenderable("./models/tree.obj");
 	r->initEdgeBuffer();
+	r->textureID = (renderEngine->loadTexture("./textures/fig-10d.png"));
 	r->show();
 	renderEngine->assignBuffers(*r);
 

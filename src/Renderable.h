@@ -33,6 +33,8 @@ public:
 	GLuint uvBuffer;
 	GLuint indexBuffer;
 
+	unsigned int textureID;
+
 	void initEdgeBuffer();
 	glm::vec3 getDimensions();
 

@@ -29,6 +29,9 @@ void RenderEngine::render(const Renderable& renderable) {
 	glBindVertexArray(renderable.vao);
 	glUseProgram(mainProgram);
 
+	//bind the texture
+	texture.bind2DTexture(mainProgram, renderable.textureID, std::string("image"));
+
 	glm::mat4 model = glm::mat4();
 	glm::mat4 modelView = view * model;
 
@@ -39,6 +42,9 @@ void RenderEngine::render(const Renderable& renderable) {
 
 	glDrawElements(GL_TRIANGLES, renderable.drawFaces.size(), GL_UNSIGNED_SHORT, (void*)0);
 	glBindVertexArray(0);
+
+	//unbind the texture
+	texture.unbind2DTexture();
 
 	renderLight();
 }
@@ -112,4 +118,20 @@ void RenderEngine::setWindowSize(int width, int height) {
 // Updates lightPos by specified value
 void RenderEngine::updateLightPos(glm::vec3 add) {
 	lightPos += add;
+}
+
+// Creates a 2D texture
+unsigned int RenderEngine::loadTexture(std::string filename) {
+	//reading model texture image
+	std::vector<unsigned char> _image;
+	unsigned int _imageWidth, _imageHeight;
+
+	unsigned int error = lodepng::decode(_image, _imageWidth, _imageHeight, filename.c_str());
+	if (error)
+	{
+		std::cout << "reading error" << error << ":" << lodepng_error_text(error) << std::endl;
+	}
+
+	unsigned int id = texture.create2DTexture(_image, _imageWidth, _imageHeight);
+	return id;
 }
