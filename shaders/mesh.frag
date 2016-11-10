@@ -2,12 +2,14 @@
 
 out vec4 colour;
 
+
 uniform sampler2D image;
 //uniform float R;
 
 in vec3 N;
 in vec3 L;
 in vec3 V;
+in vec2 UV;
 
 void main(void) {    	
 	// Diffuse
@@ -21,7 +23,9 @@ void main(void) {
 	float R = 2.0;
 	float tone = 1 - pow(abs(dot(normalize(N), normalize(V))), R);
 
-	vec4 colourImage = texture(image, vec2(diffuse, tone));
+	//vec4 colourImage = texture(image, vec2(diffuse, tone));
+
+	vec4 colourImage = texture(image, UV);
 
     colour = colourImage;
 }

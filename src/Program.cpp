@@ -49,10 +49,10 @@ void Program::setupWindow() {
 
 // Main loop
 void Program::mainLoop() {
-	Renderable* r = ContentLoading::createRenderable("./models/tree.obj");
+	Renderable* r = ContentLoading::createRenderable("./models/Moblin.obj");
 	r->initEdgeBuffer();
-	r->textureID = (renderEngine->loadTexture("./textures/fig-10d.png"));
-	r->show();
+	r->textureID = (renderEngine->loadTexture("./textures/Moblin_body.png"));
+	//r->show();
 	renderEngine->assignBuffers(*r);
 
 	while(!glfwWindowShouldClose(window)) {
