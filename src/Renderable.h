@@ -15,8 +15,8 @@ struct Node {
 	Node(int vertex) : vertex(vertex) {};
 
 	unsigned short vertex;
-	bool front = 0;
-	bool back = 0;
+	bool front = false;
+	bool back = false;
 };
 
 class Renderable {
@@ -41,13 +41,13 @@ public:
 	void initEdgeBuffer();
 	void populateEdgeBuffer(glm::vec3 eye);
 	void clearEdgeBuffer();
-	std::vector<std::list<Node*>>& getEdgeBuffer() {return edgeBuffer;};
+	std::vector<std::list<Node>>& getEdgeBuffer() {return edgeBuffer;};
 	glm::vec3 getDimensions();
 
 	void show();
 
 private:
-	std::vector<std::list<Node*>> edgeBuffer;
+	std::vector<std::list<Node>> edgeBuffer;
 
 	void insertEdge(unsigned int vertex1, unsigned int vertex2);
 	void updateEdge(unsigned int vertex1, unsigned int vertex2, Facing);

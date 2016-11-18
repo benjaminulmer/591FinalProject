@@ -17,26 +17,26 @@ Renderable::~Renderable() {
 // Inserts edge into edge buffer if it is not already present
 void Renderable::insertEdge(unsigned int vertex1, unsigned int vertex2) {
 	bool found = false;
-	for (Node* n : edgeBuffer[vertex1]) {
-		if (n->vertex == vertex2) {
+	for (Node& n : edgeBuffer[vertex1]) {
+		if (n.vertex == vertex2) {
 			found = true;
 			break;
 		}
 	}
 	if (!found) {
-		edgeBuffer[vertex1].push_back(new Node(vertex2));
+		edgeBuffer[vertex1].push_back(Node(vertex2));
 	}
 }
 
 // Update specified bit field for edge in edge buffer
 void Renderable::updateEdge(unsigned int vertex1, unsigned int vertex2, Facing facing) {
-	for (Node* n : edgeBuffer[vertex1]) {
-		if (n->vertex == vertex2) {
+	for (Node& n : edgeBuffer[vertex1]) {
+		if (n.vertex == vertex2) {
 			if (facing == Facing::FRONT) {
-				n->front = true;
+				n.front = true;
 			}
 			else {
-				n->back = true;
+				n.back = true;
 			}
 			break;
 		}
@@ -45,7 +45,7 @@ void Renderable::updateEdge(unsigned int vertex1, unsigned int vertex2, Facing f
 
 // Initialize edge buffer data structure
 void Renderable::initEdgeBuffer() {
-	edgeBuffer = std::vector<std::list<Node*>>(verts.size() - 1);
+	edgeBuffer = std::vector<std::list<Node>>(verts.size() - 1);
 
 	for (unsigned int i = 0; i < faces.size(); i += 3) {
 		std::vector<unsigned int> face = std::vector<unsigned int>(3);
@@ -92,7 +92,12 @@ void Renderable::populateEdgeBuffer(glm::vec3 eye) {
 }
 
 void Renderable::clearEdgeBuffer() {
-
+	for (std::list<Node>& l : edgeBuffer) {
+		for (Node& n : l) {
+			n.front = false;
+			n.back = false;
+		}
+	}
 }
 
 // Returns dimensions of object (bounding box dimensions)
@@ -118,10 +123,10 @@ glm::vec3 Renderable::getDimensions() {
 // Prints edge buffer to console. For debugging and testing only
 void Renderable::show() {
 	int i = 0;
-	for (std::list<Node*> l : edgeBuffer) {
+	for (std::list<Node> l : edgeBuffer) {
 		std::cout << "V" << i;
-		for (Node* n : l) {
-			std::cout << " -> " << n->vertex << ":" << n->front << ":" << n->back;
+		for (Node& n : l) {
+			std::cout << " -> " << n.vertex << ":" << n.front << ":" << n.back;
 		}
 		std::cout << std::endl;
 		i++;

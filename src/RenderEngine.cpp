@@ -47,17 +47,17 @@ void RenderEngine::render(Renderable& renderable) {
 }
 
 void RenderEngine::renderLines(Renderable& renderable) {
-	std::vector<std::list<Node*>> edgeBuffer = renderable.getEdgeBuffer();
+	std::vector<std::list<Node>> edgeBuffer = renderable.getEdgeBuffer();
 	int i = 0;
-	for (std::list<Node*> l : edgeBuffer) {
-		for (Node* n : l) {
-			if (n->front && n->back) {
+	for (std::list<Node>& l : edgeBuffer) {
+		for (Node& n : l) {
+			if (n.front && n.back) {
 
 				// ALL OF THIS IS TEMPORARY
 
 				std::vector<glm::vec3> verts = std::vector<glm::vec3>();
 				verts.push_back(renderable.verts[i]);
-				verts.push_back(renderable.verts[n->vertex]);
+				verts.push_back(renderable.verts[n.vertex]);
 
 				GLuint vao, vbo;
 				glGenVertexArrays(1, &vao);

@@ -62,7 +62,7 @@ void Program::mainLoop() {
 		renderEngine->render(*r);
 		glfwSwapBuffers(window);
 
-		r->initEdgeBuffer();
+		r->clearEdgeBuffer();
 		r->populateEdgeBuffer(camera->getPosition());
 	}
 
