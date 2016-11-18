@@ -16,6 +16,8 @@ RenderEngine::RenderEngine(GLFWwindow* window) :
 	// If you change state you must change back to default after
 	glEnable(GL_DEPTH_TEST);
 	glClearColor(0.3, 0.3, 0.4, 0.0);
+	glLineWidth(5.0f);
+	glPointSize(30.0f);
 }
 
 RenderEngine::~RenderEngine() {
@@ -24,8 +26,7 @@ RenderEngine::~RenderEngine() {
 
 // Stub for render call. Will be expanded
 void RenderEngine::render(Renderable& renderable) {
-	glClear(GL_DEPTH_BUFFER_BIT ); // TODO Currently done here. Needs to be moved up so only done once per frame
-	glClear(GL_COLOR_BUFFER_BIT);
+	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT); // TODO Currently done here. Needs to be moved up so only done once per frame
 
 	glBindVertexArray(renderable.vao);
 	glUseProgram(mainProgram);
@@ -53,8 +54,8 @@ void RenderEngine::renderLines(Renderable& renderable) {
 			if (n->front && n->back) {
 
 				// ALL OF THIS IS TEMPORARY
-				/*
-				std::vector<glm::vec3> verts = std::vector<glm::vec3>(2);
+
+				std::vector<glm::vec3> verts = std::vector<glm::vec3>();
 				verts.push_back(renderable.verts[i]);
 				verts.push_back(renderable.verts[n->vertex]);
 
@@ -68,10 +69,7 @@ void RenderEngine::renderLines(Renderable& renderable) {
 				glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 				glEnableVertexAttribArray(0);
 
-				glBindVertexArray(0);
-
 				// Draw
-				glBindVertexArray(vao);
 				glUseProgram(lineProgram);
 
 				glUniformMatrix4fv(glGetUniformLocation(lineProgram, "view"), 1, GL_FALSE, glm::value_ptr(view));
@@ -82,15 +80,6 @@ void RenderEngine::renderLines(Renderable& renderable) {
 				// Delete
 				glDeleteBuffers(1, &vbo);
 				glDeleteVertexArrays(1, &vao);
-				*/
-				glUseProgram(lineProgram);
-				glUniformMatrix4fv(glGetUniformLocation(lineProgram, "view"), 1, GL_FALSE, glm::value_ptr(view));
-				glUniformMatrix4fv(glGetUniformLocation(lineProgram, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
-				glLineWidth(5.0f);
-				glBegin(GL_LINES);
-				glVertex3f(renderable.verts[i].x, renderable.verts[i].y, renderable.verts[i].z);
-				glVertex3f(renderable.verts[n->vertex].x, renderable.verts[n->vertex].y, renderable.verts[n->vertex].z);
-				glEnd();
 			}
 		}
 		i++;
@@ -106,7 +95,6 @@ void RenderEngine::renderLight() {
 	glUniformMatrix4fv(glGetUniformLocation(lightProgram, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 	glUniform3fv(glGetUniformLocation(lightProgram, "lightPos"), 1, glm::value_ptr(lightPos));
 
-	glPointSize(30.0f);
 	glDrawArrays(GL_POINTS, 0, 1);
 }
 

@@ -69,7 +69,6 @@ void Renderable::populateEdgeBuffer(glm::vec3 eye) {
 		face[2] = faces[i+2];
 		std::sort(face.begin(), face.end());
 
-
 		unsigned int p1 = faces[i];
 		unsigned int p2 = faces[i+1];
 		unsigned int p3 = faces[i+2];
@@ -90,6 +89,10 @@ void Renderable::populateEdgeBuffer(glm::vec3 eye) {
 			updateEdge(face[1], face[2], Facing::BACK);
 		}
 	}
+}
+
+void Renderable::clearEdgeBuffer() {
+
 }
 
 // Returns dimensions of object (bounding box dimensions)
