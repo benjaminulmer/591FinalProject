@@ -23,6 +23,7 @@ public:
 	void setView(const glm::mat4& value);
 	void setWindowSize(int width, int height);
 	void updateLightPos(glm::vec3 add);
+	void setMode(GLuint newMode);
 
 	unsigned int loadTexture(std::string filename);
 
@@ -33,6 +34,9 @@ private:
 
 	GLuint mainProgram;
 	GLuint lightProgram;
+
+	//attribute or image mode
+	GLuint mode;
 
 	glm::mat4 view;
 	glm::mat4 projection;

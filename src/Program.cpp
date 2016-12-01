@@ -51,6 +51,7 @@ void Program::setupWindow() {
 void Program::mainLoop() {
 	Renderable* r = ContentLoading::createRenderable("./models/Moblin.obj");
 	r->initEdgeBuffer();
+	r->attributeID = (renderEngine->loadTexture("./textures/attribute/orientation/fig-10d.png"));
 	r->textureID = (renderEngine->loadTexture("./textures/image/Moblin_body.png"));
 	//r->show();
 	renderEngine->assignBuffers(*r);

@@ -2,7 +2,7 @@
 
 out vec4 colour;
 
-
+uniform unsigned int mode;
 uniform sampler2D image;
 //uniform float R;
 
@@ -16,16 +16,20 @@ void main(void) {
 	//vec3 col = vec3(1.0, 1.0, 0.0);
     //colour = vec4(col * ((dot(N, L) +1) / 2), 1.0);
 
-	// x axis for texture coordinate
-    float diffuse =  (dot(N, L) + 1) / 2;
+	vec4 colourImage;
+	// Attribute-based texturing
+	if (mode == 0) {
+		// x axis for texture coordinate
+		float diffuse =  (dot(N, L) + 1) / 2;
 
-	// y axis for texture coordinate
-	float R = 2.0;
-	float tone = 1 - pow(abs(dot(normalize(N), normalize(V))), R);
+		// y axis for texture coordinate
+		float R = 2.0;
+		float tone = 1 - pow(abs(dot(normalize(N), normalize(V))), R);
 
-	//vec4 colourImage = texture(image, vec2(diffuse, tone));
+		colourImage = texture(image, vec2(diffuse, tone));
+	}
 
-	vec4 colourImage = texture(image, UV);
+	else if (mode == 1) { colourImage = texture(image, UV); }
 
     colour = colourImage;
 }

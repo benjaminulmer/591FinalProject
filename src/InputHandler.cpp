@@ -31,6 +31,12 @@ void InputHandler::key(GLFWwindow* window, int key, int scancode, int action, in
 	else if (key == GLFW_KEY_Q) {
 		renderEngine->updateLightPos(glm::vec3(0.0, 0.0, -0.1));
 	}
+	else if (key == GLFW_KEY_O) {
+		renderEngine->setMode(0);
+	}
+	else if (key == GLFW_KEY_P) {
+		renderEngine->setMode(1);
+	}
 }
 
 // Callback for mouse button presses

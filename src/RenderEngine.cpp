@@ -1,7 +1,7 @@
 #include "RenderEngine.h"
 
 RenderEngine::RenderEngine(GLFWwindow* window) :
-	window(window) {
+	window(window), mode(0) {
 
 	glfwGetWindowSize(window, &width, &height);
 
@@ -30,7 +30,7 @@ void RenderEngine::render(const Renderable& renderable) {
 	glUseProgram(mainProgram);
 
 	//bind the texture
-	texture.bind2DTexture(mainProgram, renderable.textureID, std::string("image"));
+	texture.bind2DTexture(mainProgram, (mode==0)?renderable.attributeID : renderable.textureID, std::string("image"));
 
 	glm::mat4 model = glm::mat4();
 	glm::mat4 modelView = view * model;
@@ -39,6 +39,8 @@ void RenderEngine::render(const Renderable& renderable) {
 	glUniformMatrix4fv(glGetUniformLocation(mainProgram, "modelView"), 1, GL_FALSE, glm::value_ptr(modelView));
 	glUniformMatrix4fv(glGetUniformLocation(mainProgram, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 	glUniform3fv(glGetUniformLocation(mainProgram, "lightPos"), 1, glm::value_ptr(lightPos));
+	glUniform1ui(glGetUniformLocation(mainProgram, "mode"), mode);
+
 
 	glDrawElements(GL_TRIANGLES, renderable.drawFaces.size(), GL_UNSIGNED_SHORT, (void*)0);
 	glBindVertexArray(0);
@@ -118,6 +120,11 @@ void RenderEngine::setWindowSize(int width, int height) {
 // Updates lightPos by specified value
 void RenderEngine::updateLightPos(glm::vec3 add) {
 	lightPos += add;
+}
+
+// Switches between attribute and image-based texturing modes
+void RenderEngine::setMode(GLuint newMode) {
+	mode = newMode;
 }
 
 // Creates a 2D texture
