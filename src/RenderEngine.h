@@ -36,7 +36,7 @@ private:
 	GLuint lightProgram;
 
 	//attribute or image mode
-	GLuint mode;
+	unsigned int mode;
 
 	glm::mat4 view;
 	glm::mat4 projection;

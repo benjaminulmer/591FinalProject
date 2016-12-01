@@ -2,8 +2,9 @@
 
 out vec4 colour;
 
-uniform unsigned int mode;
+uniform sampler2D attr;
 uniform sampler2D image;
+uniform int mode;
 //uniform float R;
 
 in vec3 N;
@@ -26,7 +27,7 @@ void main(void) {
 		float R = 2.0;
 		float tone = 1 - pow(abs(dot(normalize(N), normalize(V))), R);
 
-		colourImage = texture(image, vec2(diffuse, tone));
+		colourImage = texture(attr, vec2(diffuse, tone));
 	}
 
 	else if (mode == 1) { colourImage = texture(image, UV); }
