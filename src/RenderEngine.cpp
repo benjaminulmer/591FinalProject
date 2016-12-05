@@ -1,7 +1,7 @@
 #include "RenderEngine.h"
 
 RenderEngine::RenderEngine(GLFWwindow* window) :
-	window(window), mode(0) {
+	window(window), mode(0), activeID(0) {
 
 	glfwGetWindowSize(window, &width, &height);
 
@@ -30,7 +30,7 @@ void RenderEngine::render(const Renderable& renderable) {
 	glUseProgram(mainProgram);
 
 	//bind the texture
-	texture.bind2DTexture(mainProgram, renderable.attributeID, std::string("attr"));
+	texture.bind2DTexture(mainProgram, attributeTextures[activeID], std::string("attr"));
 	texture.bind2DTexture(mainProgram, renderable.textureID, std::string("image"));
 
 	glm::mat4 model = glm::mat4();

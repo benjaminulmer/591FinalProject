@@ -5,6 +5,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtx/transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <vector>
 
 #include "ShaderTools.h"
 #include "Renderable.h"
@@ -26,6 +27,9 @@ public:
 	void setMode(GLuint newMode);
 
 	unsigned int loadTexture(std::string filename);
+
+	std::vector<GLuint> attributeTextures;
+	unsigned int activeID;
 
 private:
 	GLFWwindow* window;
