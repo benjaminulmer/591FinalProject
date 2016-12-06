@@ -143,3 +143,8 @@ unsigned int RenderEngine::loadTexture(std::string filename) {
 	unsigned int id = texture.create2DTexture(_image, _imageWidth, _imageHeight);
 	return id;
 }
+
+void RenderEngine::swapAttributeTexture(int inc) {
+	activeID += inc;
+	activeID = activeID % attributeTextures.size();
+}

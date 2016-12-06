@@ -13,24 +13,22 @@ in vec3 V;
 in vec2 UV;
 
 void main(void) {    	
-	// Diffuse
-	//vec3 col = vec3(1.0, 1.0, 0.0);
-    //colour = vec4(col * ((dot(N, L) +1) / 2), 1.0);
-
 	vec4 colourImage;
-	// Attribute-based texturing
-	if (mode == 0) {
-		// x axis for texture coordinate
-		float diffuse =  (dot(N, L) + 1) / 2;
 
-		// y axis for texture coordinate
-		float R = 2.0;
-		float tone = 1 - pow(abs(dot(normalize(N), normalize(V))), R);
+	/***** Attribute-based texturing *****/
+	// x axis for texture coordinate
+	float diffuse =  (dot(N, L) + 1) / 2;
 
-		colourImage = texture(attr, vec2(diffuse, tone));
-	}
+	// y axis for texture coordinate
+	float R = 2.0;
+	float tone = 1 - pow(abs(dot(normalize(N), normalize(V))), R);
 
-	else if (mode == 1) { colourImage = texture(image, UV); }
+	vec4 attrColour = texture(attr, vec2(diffuse, tone));
 
-    colour = colourImage;
+	/***** Image-based texturing *****/
+	vec4 imgColour = texture(image, UV);
+
+	if (mode == 0) colour = (attrColour * 0.5) + (imgColour * 0.5);
+	else if (mode == 1) colour = attrColour;
+	else if (mode == 2) colour = imgColour;
 }

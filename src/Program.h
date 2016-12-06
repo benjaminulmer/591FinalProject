@@ -25,6 +25,6 @@ private:
 
 	static void error(int error, const char* description);
 	void setupWindow();
-	void setupAttributeTextures();
+	void setupTextures();
 	void mainLoop();
 };

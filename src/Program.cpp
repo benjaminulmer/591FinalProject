@@ -48,24 +48,26 @@ void Program::setupWindow() {
 }
 
 // Initializes all attribute-based textures
-void Program::setupAttributeTextures() {
+void Program::setupTextures() {
 	renderEngine->attributeTextures.push_back(renderEngine->loadTexture("./textures/attribute/orientation/fig-10b.png"));
 	renderEngine->attributeTextures.push_back(renderEngine->loadTexture("./textures/attribute/orientation/fig-10c.png"));
 	renderEngine->attributeTextures.push_back(renderEngine->loadTexture("./textures/attribute/orientation/fig-10d.png"));
 	renderEngine->attributeTextures.push_back(renderEngine->loadTexture("./textures/attribute/orientation/fig-11b.png"));
 	renderEngine->attributeTextures.push_back(renderEngine->loadTexture("./textures/attribute/orientation/fig-11c.png"));
 	renderEngine->attributeTextures.push_back(renderEngine->loadTexture("./textures/attribute/orientation/fig-11d.png"));
+
+	renderEngine->activeID = 0;
 }
 
 // Main loop
 void Program::mainLoop() {
 	Renderable* r = ContentLoading::createRenderable("./models/Moblin.obj");
 	r->initEdgeBuffer();
-	r->attributeID = (renderEngine->loadTexture("./textures/attribute/orientation/fig-10d.png"));
+	setupTextures();
+
 	r->textureID = (renderEngine->loadTexture("./textures/image/Moblin_body.png"));
 	//r->show();
 	renderEngine->assignBuffers(*r);
-	setupAttributeTextures();
 
 	while(!glfwWindowShouldClose(window)) {
 		glfwPollEvents();

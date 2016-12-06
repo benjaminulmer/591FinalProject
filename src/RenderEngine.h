@@ -27,6 +27,7 @@ public:
 	void setMode(GLuint newMode);
 
 	unsigned int loadTexture(std::string filename);
+	void swapAttributeTexture(int inc);
 
 	std::vector<GLuint> attributeTextures;
 	unsigned int activeID;
