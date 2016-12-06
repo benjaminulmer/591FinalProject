@@ -21,6 +21,13 @@ glm::mat4 Camera::getView() {
 	return glm::lookAt(eyeTemp, centre, up);
 }
 
+glm::vec3 Camera::getPosition() {
+	glm::vec3 eyeTemp = glm::rotateY(eye, -longitudeRotRad);
+	eyeTemp = glm::rotate(eyeTemp, latitudeRotRad, glm::cross(eyeTemp, glm::vec3(0.0, 1.0, 0.0)));
+
+	return eyeTemp;
+}
+
 // Rotates camera along longitudinal axis (spherical coords)
 void Camera::updateLongitudeRotation(float rad) {
 	longitudeRotRad += rad * M_PI/180;

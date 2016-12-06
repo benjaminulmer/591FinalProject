@@ -6,6 +6,11 @@
 #include <list>
 #include <algorithm>
 
+enum class Facing {
+	FRONT,
+	BACK
+};
+
 struct Node {
 	Node(int vertex) : vertex(vertex) {};
 
@@ -34,13 +39,17 @@ public:
 	GLuint indexBuffer;
 
 	void initEdgeBuffer();
+	void populateEdgeBuffer(glm::vec3 eye);
+	void clearEdgeBuffer();
+	std::vector<std::list<Node*>>& getEdgeBuffer() {return edgeBuffer;};
 	glm::vec3 getDimensions();
 
 	void show();
 
 private:
-	std::vector<std::list<Node>> edgeBuffer;
+	std::vector<std::list<Node*>> edgeBuffer;
 
 	void insertEdge(unsigned int vertex1, unsigned int vertex2);
+	void updateEdge(unsigned int vertex1, unsigned int vertex2, Facing);
 };
 
