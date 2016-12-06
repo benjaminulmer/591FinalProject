@@ -31,6 +31,30 @@ void InputHandler::key(GLFWwindow* window, int key, int scancode, int action, in
 	else if (key == GLFW_KEY_Q) {
 		renderEngine->updateLightPos(glm::vec3(0.0, 0.0, -0.1));
 	}
+	else if (key == GLFW_KEY_I) {
+		renderEngine->setMode(0);
+	}
+	else if (key == GLFW_KEY_O) {
+		renderEngine->setMode(1);
+	}
+	else if (key == GLFW_KEY_P) {
+		renderEngine->setMode(2);
+	}
+	else if (key == GLFW_KEY_K) {
+		if (action == GLFW_PRESS) {
+			renderEngine->swapAttributeTexture(-1);
+		}
+	}
+	else if (key == GLFW_KEY_L) {
+		if (action == GLFW_PRESS) {
+			renderEngine->swapAttributeTexture(1);
+		}
+	}
+	else if (key == GLFW_KEY_ESCAPE) {
+		glfwDestroyWindow(window);
+		glfwTerminate();
+		exit(0);
+	}
 }
 
 // Callback for mouse button presses
