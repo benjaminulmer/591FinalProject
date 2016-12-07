@@ -31,7 +31,8 @@ void RenderEngine::render(const Renderable& renderable) {
 
 	//bind the texture
 	texture.bind2DTexture(mainProgram, attributeTextures[activeID], std::string("attr"));
-	texture.bind2DTexture(mainProgram, renderable.textureID, std::string("image"));
+	if (renderable.textureID == NULL) { mode = 1; } // switch to attribute-only mode
+	else { texture.bind2DTexture(mainProgram, renderable.textureID, std::string("image")); }
 
 	glm::mat4 model = glm::mat4();
 	glm::mat4 modelView = view * model;

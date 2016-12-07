@@ -4,7 +4,7 @@
 Renderable::Renderable() :
 	vao(0), vertexBuffer(0),
 	normalBuffer(0), uvBuffer(0),
-	indexBuffer(0){}
+	indexBuffer(0), textureID(NULL) {}
 
 Renderable::~Renderable() {
 	// Remove data from GPU
