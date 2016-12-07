@@ -29,6 +29,7 @@ void main(void) {
 	vec4 imgColour = texture(image, UV);
 
 	if (mode == 0) colour = (attrColour * 0.5) + (imgColour * 0.5);
+	//if (mode == 0) colour = attrColour * imgColour;
 	else if (mode == 1) colour = attrColour;
 	else if (mode == 2) colour = imgColour;
 }

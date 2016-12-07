@@ -55,6 +55,7 @@ void Program::setupTextures() {
 	renderEngine->attributeTextures.push_back(renderEngine->loadTexture("./textures/attribute/orientation/fig-11b.png"));
 	renderEngine->attributeTextures.push_back(renderEngine->loadTexture("./textures/attribute/orientation/fig-11c.png"));
 	renderEngine->attributeTextures.push_back(renderEngine->loadTexture("./textures/attribute/orientation/fig-11d.png"));
+	renderEngine->attributeTextures.push_back(renderEngine->loadTexture("./textures/attribute/orientation/transparent.png"));
 
 	renderEngine->activeID = 0;
 }
