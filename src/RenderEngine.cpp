@@ -146,6 +146,11 @@ unsigned int RenderEngine::loadTexture(std::string filename) {
 }
 
 void RenderEngine::swapAttributeTexture(int inc) {
-	activeID += inc;
-	activeID = activeID % attributeTextures.size();
+	if ((activeID == 0) && (inc < 0)) {
+		activeID = attributeTextures.size() + inc;
+	}
+	else {
+		activeID += inc;
+		activeID = activeID % attributeTextures.size();
+	}
 }
