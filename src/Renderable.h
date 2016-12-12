@@ -6,6 +6,9 @@
 #include <list>
 #include <algorithm>
 
+#define _USE_MATH_DEFINES
+#include <math.h>
+
 enum class Facing {
 	FRONT,
 	BACK
@@ -15,6 +18,7 @@ struct Node {
 	Node(int vertex) : vertex(vertex) {};
 
 	unsigned short vertex;
+	unsigned short angle = 0;
 	bool front = false;
 	bool back = false;
 };
@@ -50,7 +54,7 @@ public:
 private:
 	std::vector<std::list<Node>> edgeBuffer;
 
-	void insertEdge(unsigned int vertex1, unsigned int vertex2);
+	void insertEdge(unsigned int vertex1, unsigned int vertex2, std::vector<std::list<glm::vec3>>& tempBuffer, glm::vec3 normal);
 	void updateEdge(unsigned int vertex1, unsigned int vertex2, Facing);
 };
 

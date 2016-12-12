@@ -15,16 +15,22 @@ Renderable::~Renderable() {
 }
 
 // Inserts edge into edge buffer if it is not already present
-void Renderable::insertEdge(unsigned int vertex1, unsigned int vertex2) {
+void Renderable::insertEdge(unsigned int vertex1, unsigned int vertex2, std::vector<std::list<glm::vec3>>& tempBuffer, glm::vec3 normal) {
 	bool found = false;
+	int i = 0;
 	for (Node& n : edgeBuffer[vertex1]) {
 		if (n.vertex == vertex2) {
 			found = true;
+			std::list<glm::vec3>::iterator it = std::next(tempBuffer[vertex1].begin(), i);
+			float result = glm::dot(normal, *it);
+			n.angle = abs(acos(result) * 180/M_PI);
 			break;
 		}
+		i++;
 	}
 	if (!found) {
 		edgeBuffer[vertex1].push_back(Node(vertex2));
+		tempBuffer[vertex1].push_back(normal);
 	}
 }
 
@@ -46,6 +52,7 @@ void Renderable::updateEdge(unsigned int vertex1, unsigned int vertex2, Facing f
 // Initialize edge buffer data structure
 void Renderable::initEdgeBuffer() {
 	edgeBuffer = std::vector<std::list<Node>>(verts.size() - 1);
+	std::vector<std::list<glm::vec3>> tempBuffer(verts.size() - 1);
 
 	for (unsigned int i = 0; i < faces.size(); i += 3) {
 		std::vector<unsigned int> face = std::vector<unsigned int>(3);
@@ -54,9 +61,18 @@ void Renderable::initEdgeBuffer() {
 		face[2] = faces[i+2];
 		std::sort(face.begin(), face.end());
 
-		insertEdge(face[0], face[1]);
-		insertEdge(face[0], face[2]);
-		insertEdge(face[1], face[2]);
+		unsigned int p1 = faces[i];
+		unsigned int p2 = faces[i+1];
+		unsigned int p3 = faces[i+2];
+
+		glm::vec3 v1 = verts[p2] - verts[p1];
+		glm::vec3 v2 = verts[p3] - verts[p1];
+
+		glm::vec3 normal = glm::normalize(glm::cross(v1, v2));
+
+		insertEdge(face[0], face[1], tempBuffer, normal);
+		insertEdge(face[0], face[2], tempBuffer, normal);
+		insertEdge(face[1], face[2], tempBuffer, normal);
 	}
 }
 
@@ -126,7 +142,7 @@ void Renderable::show() {
 	for (std::list<Node> l : edgeBuffer) {
 		std::cout << "V" << i;
 		for (Node& n : l) {
-			std::cout << " -> " << n.vertex << ":" << n.front << ":" << n.back;
+			std::cout << " -> " << n.vertex << ":" << n.front << ":" << n.back << ":" << n.angle;
 		}
 		std::cout << std::endl;
 		i++;
