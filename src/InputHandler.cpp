@@ -2,12 +2,14 @@
 
 Camera* InputHandler::camera;
 RenderEngine* InputHandler::renderEngine;
+Renderable* InputHandler::renderable;
 float InputHandler::mouseOldX;
 float InputHandler::mouseOldY;
 
 // Must be called before processing any GLFW events
 void InputHandler::setUp(Camera* camera, RenderEngine* renderEngine) {
 	InputHandler::camera = camera;
+	InputHandler::renderEngine = renderEngine;
 	InputHandler::renderEngine = renderEngine;
 }
 
@@ -40,15 +42,23 @@ void InputHandler::key(GLFWwindow* window, int key, int scancode, int action, in
 	else if (key == GLFW_KEY_P) {
 		renderEngine->setMode(Mode::IMAGE);
 	}
-	else if (key == GLFW_KEY_K) {
-		if (action == GLFW_PRESS) {
-			renderEngine->swapAttributeTexture(-1);
-		}
+	else if (key == GLFW_KEY_K && action == GLFW_PRESS) {
+		renderEngine->swapAttributeTexture(-1);
 	}
-	else if (key == GLFW_KEY_L) {
-		if (action == GLFW_PRESS) {
-			renderEngine->swapAttributeTexture(1);
-		}
+	else if (key == GLFW_KEY_L && action == GLFW_PRESS) {
+		renderEngine->swapAttributeTexture(1);
+	}
+	else if (key == GLFW_KEY_1 && action == GLFW_PRESS) {
+		renderable->updateContourBounds(-5, 0);
+	}
+	else if (key == GLFW_KEY_2 && action == GLFW_PRESS) {
+		renderable->updateContourBounds(5, 0);
+	}
+	else if (key == GLFW_KEY_3 && action == GLFW_PRESS) {
+		renderable->updateContourBounds(0, -5);
+	}
+	else if (key == GLFW_KEY_4 && action == GLFW_PRESS) {
+		renderable->updateContourBounds(0, 5);
 	}
 	else if (key == GLFW_KEY_ESCAPE) {
 		glfwDestroyWindow(window);

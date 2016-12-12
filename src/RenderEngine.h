@@ -14,9 +14,9 @@
 #include "lodepng.h"
 
 enum class Mode {
-	IMAGE,
+	COMBINED,
 	ATTRIBUTE,
-	COMBINED
+	IMAGE
 };
 
 class RenderEngine {

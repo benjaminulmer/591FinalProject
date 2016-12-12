@@ -62,13 +62,14 @@ void Program::setupTextures() {
 // Main loop
 void Program::mainLoop() {
 	Renderable* r = ContentLoading::createRenderable("./models/Moblin.obj");
+	InputHandler::setCurRenderable(r);
 	r->initEdgeBuffer();
 	r->populateEdgeBuffer(camera->getPosition());
 
 	setupTextures();
 	r->textureID = (renderEngine->loadTexture("./textures/image/Moblin_body.png"));
 
-	//r->show();
+	r->show();
 	renderEngine->assignBuffers(*r);
 
 	while(!glfwWindowShouldClose(window)) {

@@ -60,7 +60,7 @@ void RenderEngine::renderLines(Renderable& renderable) {
 	int i = 0;
 	for (std::list<Node>& l : edgeBuffer) {
 		for (Node& n : l) {
-			if ((n.front && n.back) || (n.angle > 90 && n.angle < 130)) {
+			if ((n.front && n.back) || (n.angle > renderable.getLowerCountour() && n.angle < renderable.getUpperCountour())) {
 
 				// ALL OF THIS IS TEMPORARY
 

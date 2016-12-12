@@ -43,6 +43,9 @@ public:
 	GLuint indexBuffer;
 	GLuint textureID;
 
+	void updateContourBounds(int lower, int upper);
+	int getLowerCountour() {return contourLower;}
+	int getUpperCountour() {return contourUpper;}
 	void initEdgeBuffer();
 	void populateEdgeBuffer(glm::vec3 eye);
 	void clearEdgeBuffer();
@@ -53,6 +56,8 @@ public:
 
 private:
 	std::vector<std::list<Node>> edgeBuffer;
+	int contourLower = 65;
+	int contourUpper = 165;
 
 	void insertEdge(unsigned int vertex1, unsigned int vertex2, std::vector<std::list<glm::vec3>>& tempBuffer, glm::vec3 normal);
 	void updateEdge(unsigned int vertex1, unsigned int vertex2, Facing);

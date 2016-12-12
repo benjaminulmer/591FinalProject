@@ -14,6 +14,17 @@ Renderable::~Renderable() {
 	glDeleteVertexArrays(1, &vao);
 }
 
+// Updates the current contour bounds by the provided
+void Renderable::updateContourBounds(int lower, int upper) {
+	if (contourLower + lower >= 0) {
+		contourLower += lower;
+	}
+	if (contourUpper + upper <= 180) {
+		contourUpper += upper;
+	}
+	std::cout << contourLower << " : " << contourUpper << std::endl;
+}
+
 // Inserts edge into edge buffer if it is not already present
 void Renderable::insertEdge(unsigned int vertex1, unsigned int vertex2, std::vector<std::list<glm::vec3>>& tempBuffer, glm::vec3 normal) {
 	bool found = false;
