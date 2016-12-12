@@ -13,6 +13,12 @@
 #include "texture.h"
 #include "lodepng.h"
 
+enum class Mode {
+	IMAGE,
+	ATTRIBUTE,
+	COMBINED
+};
+
 class RenderEngine {
 
 public:
@@ -24,13 +30,13 @@ public:
 	void setView(const glm::mat4& value);
 	void setWindowSize(int width, int height);
 	void updateLightPos(glm::vec3 add);
-	void setMode(GLuint newMode);
+	void setMode(Mode newMode);
 
 	unsigned int loadTexture(std::string filename);
 	void swapAttributeTexture(int inc);
 
 	std::vector<GLuint> attributeTextures;
-	unsigned int activeID;
+	GLuint activeID;
 
 private:
 	GLFWwindow* window;
@@ -42,7 +48,7 @@ private:
 	GLuint lineProgram;
 
 	//attribute or image mode
-	unsigned int mode;
+	Mode mode;
 
 	glm::mat4 view;
 	glm::mat4 projection;

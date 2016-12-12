@@ -1,7 +1,7 @@
 #include "RenderEngine.h"
 
 RenderEngine::RenderEngine(GLFWwindow* window) :
-	window(window), mode(0), activeID(0) {
+	activeID(0), window(window), mode(Mode::COMBINED) {
 
 	glfwGetWindowSize(window, &width, &height);
 
@@ -42,7 +42,7 @@ void RenderEngine::render(Renderable& renderable) {
 	glUniformMatrix4fv(glGetUniformLocation(mainProgram, "modelView"), 1, GL_FALSE, glm::value_ptr(modelView));
 	glUniformMatrix4fv(glGetUniformLocation(mainProgram, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 	glUniform3fv(glGetUniformLocation(mainProgram, "lightPos"), 1, glm::value_ptr(lightPos));
-	glUniform1i(glGetUniformLocation(mainProgram, "mode"), mode);
+	glUniform1i(glGetUniformLocation(mainProgram, "mode"), (int)mode);
 
 
 	glDrawElements(GL_TRIANGLES, renderable.drawFaces.size(), GL_UNSIGNED_SHORT, (void*)0);
@@ -168,7 +168,7 @@ void RenderEngine::updateLightPos(glm::vec3 add) {
 }
 
 // Switches between attribute and image-based texturing modes
-void RenderEngine::setMode(GLuint newMode) {
+void RenderEngine::setMode(Mode newMode) {
 	mode = newMode;
 }
 

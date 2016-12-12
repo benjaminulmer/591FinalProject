@@ -20,7 +20,7 @@ void main(void) {
 	// Put light in camera space
 	vec4 lightCameraSpace = modelView * vec4(lightPos, 1.0);
 	
-	// Put normal in camera space (no non-uniform scaling so we an use just modelView)
+	// Put normal in camera space (no non-uniform scaling so we can use just modelView)
 	vec4 nCameraSpace = modelView * vec4(normal, 0.0);
 	N = normalize(nCameraSpace.xyz);
 

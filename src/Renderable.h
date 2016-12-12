@@ -37,8 +37,7 @@ public:
 	GLuint normalBuffer;
 	GLuint uvBuffer;
 	GLuint indexBuffer;
-
-	unsigned int textureID;
+	GLuint textureID;
 
 	void initEdgeBuffer();
 	void populateEdgeBuffer(glm::vec3 eye);

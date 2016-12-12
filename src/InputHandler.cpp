@@ -32,13 +32,13 @@ void InputHandler::key(GLFWwindow* window, int key, int scancode, int action, in
 		renderEngine->updateLightPos(glm::vec3(0.0, 0.0, -0.1));
 	}
 	else if (key == GLFW_KEY_I) {
-		renderEngine->setMode(0);
+		renderEngine->setMode(Mode::COMBINED);
 	}
 	else if (key == GLFW_KEY_O) {
-		renderEngine->setMode(1);
+		renderEngine->setMode(Mode::ATTRIBUTE);
 	}
 	else if (key == GLFW_KEY_P) {
-		renderEngine->setMode(2);
+		renderEngine->setMode(Mode::IMAGE);
 	}
 	else if (key == GLFW_KEY_K) {
 		if (action == GLFW_PRESS) {
