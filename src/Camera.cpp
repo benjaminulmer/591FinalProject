@@ -14,7 +14,7 @@ Camera::~Camera() {
 }
 
 // Gets view matrix for the current camera
-glm::mat4 Camera::getView() {
+glm::mat4 Camera::getLookAt() {
 	glm::vec3 eyeTemp = glm::rotateY(eye, -longitudeRotRad);
 	eyeTemp = glm::rotate(eyeTemp, latitudeRotRad, glm::cross(eyeTemp, glm::vec3(0.0, 1.0, 0.0)));
 

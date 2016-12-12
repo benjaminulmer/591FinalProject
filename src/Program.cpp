@@ -57,12 +57,12 @@ void Program::mainLoop() {
 
 	while(!glfwWindowShouldClose(window)) {
 		glfwPollEvents();
-		renderEngine->setView(camera->getView());
+		renderEngine->setView(camera->getLookAt());
 
 		renderEngine->render(*r);
 		glfwSwapBuffers(window);
 
-		r->clearEdgeBuffer();
+		//r->clearEdgeBuffer(); // clearing done in render. good design choice?
 		r->populateEdgeBuffer(camera->getPosition());
 	}
 

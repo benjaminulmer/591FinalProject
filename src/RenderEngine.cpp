@@ -47,7 +47,7 @@ void RenderEngine::render(Renderable& renderable) {
 }
 
 void RenderEngine::renderLines(Renderable& renderable) {
-	std::vector<std::list<Node>> edgeBuffer = renderable.getEdgeBuffer();
+	std::vector<std::list<Node>>& edgeBuffer = renderable.getEdgeBuffer();
 	int i = 0;
 	for (std::list<Node>& l : edgeBuffer) {
 		for (Node& n : l) {
@@ -81,6 +81,8 @@ void RenderEngine::renderLines(Renderable& renderable) {
 				glDeleteBuffers(1, &vbo);
 				glDeleteVertexArrays(1, &vao);
 			}
+			n.front = false;
+			n.back = false;
 		}
 		i++;
 	}
