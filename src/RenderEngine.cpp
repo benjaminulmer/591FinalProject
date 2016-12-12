@@ -9,7 +9,7 @@ RenderEngine::RenderEngine(GLFWwindow* window) :
 	lightProgram = ShaderTools::compileShaders("./shaders/light.vert", "./shaders/light.frag");
 	lineProgram = ShaderTools::compileShaders("./shaders/line.vert", "./shaders/line.frag");
 
-	lightPos = glm::vec3(0.0, 10.0, 0.0);
+	lightPos = glm::vec3(0.0, 2.0, 0.0);
 	projection = glm::perspective(45.0f, (float)width/height, 0.01f, 100.0f);
 
 	// Default openGL state
@@ -31,7 +31,7 @@ void RenderEngine::render(Renderable& renderable) {
 	glBindVertexArray(renderable.vao);
 	glUseProgram(mainProgram);
 
-	//bind the texture
+	// Bind the texture
 	texture.bind2DTexture(mainProgram, attributeTextures[activeID], std::string("attr"));
 	texture.bind2DTexture(mainProgram, renderable.textureID, std::string("image"));
 
@@ -46,11 +46,9 @@ void RenderEngine::render(Renderable& renderable) {
 
 	glDrawElements(GL_TRIANGLES, renderable.drawFaces.size(), GL_UNSIGNED_SHORT, (void*)0);
 	glBindVertexArray(0);
-
-	renderLines(renderable);
-	//unbind the texture
 	texture.unbind2DTexture();
 
+	renderLines(renderable);
 	renderLight();
 }
 
