@@ -2,6 +2,7 @@
 
 #include <glm/glm.hpp>
 #include <glm/gtx/rotate_vector.hpp>
+
 #define _USE_MATH_DEFINES
 #include <math.h>
 

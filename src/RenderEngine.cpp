@@ -1,7 +1,7 @@
 #include "RenderEngine.h"
 
 RenderEngine::RenderEngine(GLFWwindow* window) :
-	window(window) {
+	window(window), mode(0), activeID(0) {
 
 	glfwGetWindowSize(window, &width, &height);
 
@@ -31,6 +31,10 @@ void RenderEngine::render(Renderable& renderable) {
 	glBindVertexArray(renderable.vao);
 	glUseProgram(mainProgram);
 
+	//bind the texture
+	texture.bind2DTexture(mainProgram, attributeTextures[activeID], std::string("attr"));
+	texture.bind2DTexture(mainProgram, renderable.textureID, std::string("image"));
+
 	glm::mat4 model = glm::mat4();
 	glm::mat4 modelView = view * model;
 
@@ -38,11 +42,16 @@ void RenderEngine::render(Renderable& renderable) {
 	glUniformMatrix4fv(glGetUniformLocation(mainProgram, "modelView"), 1, GL_FALSE, glm::value_ptr(modelView));
 	glUniformMatrix4fv(glGetUniformLocation(mainProgram, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 	glUniform3fv(glGetUniformLocation(mainProgram, "lightPos"), 1, glm::value_ptr(lightPos));
+	glUniform1i(glGetUniformLocation(mainProgram, "mode"), mode);
+
 
 	glDrawElements(GL_TRIANGLES, renderable.drawFaces.size(), GL_UNSIGNED_SHORT, (void*)0);
 	glBindVertexArray(0);
 
 	renderLines(renderable);
+	//unbind the texture
+	texture.unbind2DTexture();
+
 	renderLight();
 }
 
@@ -156,4 +165,30 @@ void RenderEngine::setWindowSize(int width, int height) {
 // Updates lightPos by specified value
 void RenderEngine::updateLightPos(glm::vec3 add) {
 	lightPos += add;
+}
+
+// Switches between attribute and image-based texturing modes
+void RenderEngine::setMode(GLuint newMode) {
+	mode = newMode;
+}
+
+// Creates a 2D texture
+unsigned int RenderEngine::loadTexture(std::string filename) {
+	//reading model texture image
+	std::vector<unsigned char> _image;
+	unsigned int _imageWidth, _imageHeight;
+
+	unsigned int error = lodepng::decode(_image, _imageWidth, _imageHeight, filename.c_str());
+	if (error)
+	{
+		std::cout << "reading error" << error << ":" << lodepng_error_text(error) << std::endl;
+	}
+
+	unsigned int id = texture.create2DTexture(_image, _imageWidth, _imageHeight);
+	return id;
+}
+
+void RenderEngine::swapAttributeTexture(int inc) {
+	activeID += inc;
+	activeID = activeID % attributeTextures.size();
 }

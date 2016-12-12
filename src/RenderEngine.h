@@ -5,9 +5,13 @@
 #include <glm/glm.hpp>
 #include <glm/gtx/transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <vector>
 
 #include "ShaderTools.h"
 #include "Renderable.h"
+
+#include "texture.h"
+#include "lodepng.h"
 
 class RenderEngine {
 
@@ -20,6 +24,13 @@ public:
 	void setView(const glm::mat4& value);
 	void setWindowSize(int width, int height);
 	void updateLightPos(glm::vec3 add);
+	void setMode(GLuint newMode);
+
+	unsigned int loadTexture(std::string filename);
+	void swapAttributeTexture(int inc);
+
+	std::vector<GLuint> attributeTextures;
+	unsigned int activeID;
 
 private:
 	GLFWwindow* window;
@@ -30,12 +41,16 @@ private:
 	GLuint lightProgram;
 	GLuint lineProgram;
 
+	//attribute or image mode
+	unsigned int mode;
+
 	glm::mat4 view;
 	glm::mat4 projection;
 
 	glm::vec3 lightPos;
 
 	void renderLines(Renderable& renderable);
+	Texture texture;
 	void renderLight();
 };
 
