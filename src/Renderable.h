@@ -21,6 +21,8 @@ struct Node {
 	unsigned short angle = 0;
 	bool front = false;
 	bool back = false;
+
+	GLuint index = 0;
 };
 
 class Renderable {
@@ -42,6 +44,9 @@ public:
 	GLuint uvBuffer;
 	GLuint indexBuffer;
 	GLuint textureID;
+
+	GLuint edgeVao;
+	GLuint edgeVertexBuffer;
 
 	void updateContourBounds(int lower, int upper);
 	int getLowerCountour() {return contourLower;}

@@ -16,7 +16,7 @@ RenderEngine::RenderEngine(GLFWwindow* window) :
 	// If you change state you must change back to default after
 	glEnable(GL_DEPTH_TEST);
 	glClearColor(0.3, 0.3, 0.4, 0.0);
-	glLineWidth(5.0f);
+	glLineWidth(2.0f);
 	glPointSize(30.0f);
 }
 
@@ -44,7 +44,6 @@ void RenderEngine::render(Renderable& renderable) {
 	glUniform3fv(glGetUniformLocation(mainProgram, "lightPos"), 1, glm::value_ptr(lightPos));
 	glUniform1i(glGetUniformLocation(mainProgram, "mode"), (int)mode);
 
-
 	glDrawElements(GL_TRIANGLES, renderable.drawFaces.size(), GL_UNSIGNED_SHORT, (void*)0);
 	glBindVertexArray(0);
 
@@ -56,45 +55,24 @@ void RenderEngine::render(Renderable& renderable) {
 }
 
 void RenderEngine::renderLines(Renderable& renderable) {
+	glUseProgram(lineProgram);
+	glBindVertexArray(renderable.edgeVao);
+
 	std::vector<std::list<Node>>& edgeBuffer = renderable.getEdgeBuffer();
 	int i = 0;
 	for (std::list<Node>& l : edgeBuffer) {
 		for (Node& n : l) {
 			if ((n.front && n.back) || (n.angle > renderable.getLowerCountour() && n.angle < renderable.getUpperCountour())) {
-
-				// ALL OF THIS IS TEMPORARY
-
-				std::vector<glm::vec3> verts = std::vector<glm::vec3>();
-				verts.push_back(renderable.verts[i]);
-				verts.push_back(renderable.verts[n.vertex]);
-
-				GLuint vao, vbo;
-				glGenVertexArrays(1, &vao);
-				glBindVertexArray(vao);
-
-				glGenBuffers(1, &vbo);
-				glBindBuffer(GL_ARRAY_BUFFER, vbo);
-				glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3)*verts.size(), verts.data(), GL_STATIC_DRAW);
-				glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-				glEnableVertexAttribArray(0);
-
-				// Draw
-				glUseProgram(lineProgram);
-
 				glUniformMatrix4fv(glGetUniformLocation(lineProgram, "view"), 1, GL_FALSE, glm::value_ptr(view));
 				glUniformMatrix4fv(glGetUniformLocation(lineProgram, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
-
-				glDrawArrays(GL_LINES, 0, 2);
-
-				// Delete
-				glDeleteBuffers(1, &vbo);
-				glDeleteVertexArrays(1, &vao);
+				glDrawArrays(GL_LINES, n.index * 2, 2);
 			}
 			n.front = false;
 			n.back = false;
 		}
 		i++;
 	}
+	glBindVertexArray(0);
 }
 
 // Renders the current position of the light as a point
@@ -111,12 +89,12 @@ void RenderEngine::renderLight() {
 
 // Assigns and binds buffers for a renderable (sends it to the GPU)
 void RenderEngine::assignBuffers(Renderable& renderable) {
-	std::vector<glm::vec3> vertices = renderable.drawVerts;
-	std::vector<glm::vec3> normals = renderable.normals;
-	std::vector<glm::vec2> uvs = renderable.uvs;
-	std::vector<GLushort> faces = renderable.drawFaces;
+	std::vector<glm::vec3>& vertices = renderable.drawVerts;
+	std::vector<glm::vec3>& normals = renderable.normals;
+	std::vector<glm::vec2>& uvs = renderable.uvs;
+	std::vector<GLushort>& faces = renderable.drawFaces;
 
-	// Bind attribute array
+	// Bind attribute array for triangles
 	glGenVertexArrays(1, &renderable.vao);
 	glBindVertexArray(renderable.vao);
 
@@ -145,6 +123,36 @@ void RenderEngine::assignBuffers(Renderable& renderable) {
 	glGenBuffers(1, &renderable.indexBuffer);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, renderable.indexBuffer);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLushort)*faces.size(), faces.data(), GL_STATIC_DRAW);
+
+	glBindVertexArray(0);
+
+	// Fill vector with verticies for all edges
+	std::vector<std::list<Node>>& edgeBuffer = renderable.getEdgeBuffer();
+	std::vector<glm::vec3>& verts = renderable.verts;
+	std::vector<glm::vec3> edgeVerts = std::vector<glm::vec3>();
+
+	int i = 0;
+	int vertex1 = 0;
+	for (std::list<Node>& l : edgeBuffer) {
+		for (Node& n : l) {
+			edgeVerts.push_back(verts[vertex1]);
+			edgeVerts.push_back(verts[n.vertex]);
+			n.index = i;
+			i++;
+		}
+		vertex1++;
+	}
+
+	// Bind attribute array for edges
+	glGenVertexArrays(1, &renderable.edgeVao);
+	glBindVertexArray(renderable.edgeVao);
+
+	// Vertex buffer
+	glGenBuffers(1, &renderable.edgeVertexBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, renderable.edgeVertexBuffer);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3)*edgeVerts.size(), edgeVerts.data(), GL_STATIC_DRAW);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+	glEnableVertexAttribArray(0);
 
 	glBindVertexArray(0);
 }

@@ -4,7 +4,8 @@
 Renderable::Renderable() :
 	vao(0), vertexBuffer(0),
 	normalBuffer(0), uvBuffer(0),
-	indexBuffer(0), textureID(0) {}
+	indexBuffer(0), textureID(0),
+	edgeVao(0), edgeVertexBuffer(0) {}
 
 Renderable::~Renderable() {
 	// Remove data from GPU
@@ -12,6 +13,9 @@ Renderable::~Renderable() {
 	glDeleteBuffers(1, &normalBuffer);
 	glDeleteBuffers(1, &indexBuffer );
 	glDeleteVertexArrays(1, &vao);
+
+	glDeleteBuffers(1, &edgeVertexBuffer);
+	glDeleteVertexArrays(1, &edgeVao);
 }
 
 // Updates the current contour bounds by the provided
@@ -153,7 +157,7 @@ void Renderable::show() {
 	for (std::list<Node> l : edgeBuffer) {
 		std::cout << "V" << i;
 		for (Node& n : l) {
-			std::cout << " -> " << n.vertex << ":" << n.front << ":" << n.back << ":" << n.angle;
+			std::cout << " -> " << n.vertex << ":" << n.front << ":" << n.back << ":" << n.index;
 		}
 		std::cout << std::endl;
 		i++;

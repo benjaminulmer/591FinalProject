@@ -69,8 +69,8 @@ void Program::mainLoop() {
 	setupTextures();
 	r->textureID = (renderEngine->loadTexture("./textures/image/Moblin_body.png"));
 
-	r->show();
 	renderEngine->assignBuffers(*r);
+	//r->show();
 
 	while(!glfwWindowShouldClose(window)) {
 		glfwPollEvents();
@@ -79,7 +79,6 @@ void Program::mainLoop() {
 		renderEngine->render(*r);
 		glfwSwapBuffers(window);
 
-		//r->clearEdgeBuffer(); // clearing done in render. good design choice?
 		r->populateEdgeBuffer(camera->getPosition());
 	}
 
