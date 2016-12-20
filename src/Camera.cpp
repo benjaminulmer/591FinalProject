@@ -1,7 +1,7 @@
 #include "Camera.h"
 
 Camera::Camera() {
-	eye = glm::vec3(0.0f,0.0f, 20.0f);
+	eye = glm::vec3(0.0f,0.0f, 6.0f);
 	up = glm::vec3(0.0f, 1.0f, 0.0f);
 	centre = glm::vec3(0.0f, 0.0f, 0.0f);
 
@@ -14,11 +14,18 @@ Camera::~Camera() {
 }
 
 // Gets view matrix for the current camera
-glm::mat4 Camera::getView() {
+glm::mat4 Camera::getLookAt() {
 	glm::vec3 eyeTemp = glm::rotateY(eye, -longitudeRotRad);
 	eyeTemp = glm::rotate(eyeTemp, latitudeRotRad, glm::cross(eyeTemp, glm::vec3(0.0, 1.0, 0.0)));
 
 	return glm::lookAt(eyeTemp, centre, up);
+}
+
+glm::vec3 Camera::getPosition() {
+	glm::vec3 eyeTemp = glm::rotateY(eye, -longitudeRotRad);
+	eyeTemp = glm::rotate(eyeTemp, latitudeRotRad, glm::cross(eyeTemp, glm::vec3(0.0, 1.0, 0.0)));
+
+	return eyeTemp;
 }
 
 // Rotates camera along longitudinal axis (spherical coords)

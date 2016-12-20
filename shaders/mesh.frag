@@ -15,6 +15,7 @@ in vec3 V;
 in vec2 UV;
 
 void main(void) {    	
+
 	vec4 colourImage;
 
 	/***** Attribute-based texturing *****/

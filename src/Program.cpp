@@ -63,19 +63,24 @@ void Program::setupTextures() {
 // Main loop
 void Program::mainLoop() {
 	Renderable* r = ContentLoading::createRenderable("./models/Moblin.obj");
+	InputHandler::setCurRenderable(r);
 	r->initEdgeBuffer();
-	setupTextures();
+	r->populateEdgeBuffer(camera->getPosition());
 
+	setupTextures();
 	r->textureID = (renderEngine->loadTexture("./textures/image/Moblin_body.png"));
-	//r->show();
+
 	renderEngine->assignBuffers(*r);
+	//r->show();
 
 	while(!glfwWindowShouldClose(window)) {
 		glfwPollEvents();
-		renderEngine->setView(camera->getView());
+		renderEngine->setView(camera->getLookAt());
 
 		renderEngine->render(*r);
 		glfwSwapBuffers(window);
+
+		r->populateEdgeBuffer(camera->getPosition());
 	}
 
 	// Clean up, program needs to exit

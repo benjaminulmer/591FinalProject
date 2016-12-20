@@ -12,7 +12,8 @@ public:
 	Camera();
 	virtual ~Camera();
 
-	glm::mat4 getView();
+	glm::mat4 getLookAt();
+	glm::vec3 getPosition();
 	void updateLongitudeRotation(float rad);
 	void updateLatitudeRotation(float rad);
 	void updatePosition(glm::vec3 value);
