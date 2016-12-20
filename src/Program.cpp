@@ -23,8 +23,8 @@ void Program::start() {
 		std::cerr << glewGetErrorString(err) << std::endl;
 	}
 
-	renderEngine = new RenderEngine(window);
 	camera = new Camera();
+	renderEngine = new RenderEngine(window, camera);
 	InputHandler::setUp(camera, renderEngine);
 	mainLoop();
 }
@@ -70,11 +70,9 @@ void Program::mainLoop() {
 	r->textureID = (renderEngine->loadTexture("./textures/image/Moblin_body.png"));
 
 	renderEngine->assignBuffers(*r);
-	//r->show();
 
 	while(!glfwWindowShouldClose(window)) {
 		glfwPollEvents();
-		renderEngine->setView(camera->getLookAt());
 		r->populateEdgeBuffer(camera->getPosition());
 
 		renderEngine->render(*r);

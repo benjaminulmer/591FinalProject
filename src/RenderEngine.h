@@ -9,6 +9,7 @@
 
 #include "ShaderTools.h"
 #include "Renderable.h"
+#include "Camera.h"
 
 #include "texture.h"
 #include "lodepng.h"
@@ -22,7 +23,7 @@ enum class Mode {
 class RenderEngine {
 
 public:
-	RenderEngine(GLFWwindow* window);
+	RenderEngine(GLFWwindow* window, Camera* camera);
 	virtual ~RenderEngine();
 
 	void render(Renderable& renderable);
@@ -31,7 +32,7 @@ public:
 	void setWindowSize(int width, int height);
 	void updateLightPos(glm::vec3 add);
 	void setMode(Mode newMode);
-	void toggleLineDrawing() {lineDrawing = !lineDrawing;};
+	void toggleLineDrawing();
 
 	unsigned int loadTexture(std::string filename);
 	void swapAttributeTexture(int inc);
@@ -52,6 +53,7 @@ private:
 	Mode mode;
 	bool lineDrawing = true;
 
+	Camera* camera;
 	glm::mat4 view;
 	glm::mat4 projection;
 

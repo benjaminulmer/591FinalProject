@@ -1,7 +1,7 @@
 #include "RenderEngine.h"
 
-RenderEngine::RenderEngine(GLFWwindow* window) :
-	activeID(0), window(window), mode(Mode::COMBINED) {
+RenderEngine::RenderEngine(GLFWwindow* window, Camera* camera) :
+	activeID(0), window(window), mode(Mode::COMBINED), camera(camera) {
 
 	glfwGetWindowSize(window, &width, &height);
 
@@ -15,6 +15,7 @@ RenderEngine::RenderEngine(GLFWwindow* window) :
 	// Default openGL state
 	// If you change state you must change back to default after
 	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_LINE_SMOOTH);
 	glClearColor(0.3, 0.3, 0.4, 0.0);
 	glLineWidth(2.0f);
 	glPointSize(30.0f);
@@ -35,6 +36,7 @@ void RenderEngine::render(Renderable& renderable) {
 	texture.bind2DTexture(mainProgram, attributeTextures[activeID], std::string("attr"));
 	texture.bind2DTexture(mainProgram, renderable.textureID, std::string("image"));
 
+	view = camera->getLookAt();
 	glm::mat4 model = glm::mat4();
 	glm::mat4 modelView = view * model;
 
@@ -54,6 +56,7 @@ void RenderEngine::render(Renderable& renderable) {
 	renderLight();
 }
 
+// Draws all lines of a renderable as determined by the edge buffer
 void RenderEngine::renderLines(Renderable& renderable) {
 	glUseProgram(lineProgram);
 	glBindVertexArray(renderable.edgeVao);
@@ -66,6 +69,13 @@ void RenderEngine::renderLines(Renderable& renderable) {
 			bool artist = (n.angle > renderable.getLowerCountour() && n.angle < renderable.getUpperCountour());
 			// if (silhouette || artist edge || boundary edge)
 			if ((n.front && n.back) || artist || n.front != n.back) {
+
+				// Calculate size of line
+				glm::vec3 camPos = camera->getPosition();
+				glm::vec3 point = renderable.verts[n.vertex];
+				float distance = glm::length(camPos - point);
+				glLineWidth(7.0f / distance);
+
 				glUniformMatrix4fv(glGetUniformLocation(lineProgram, "view"), 1, GL_FALSE, glm::value_ptr(view));
 				glUniformMatrix4fv(glGetUniformLocation(lineProgram, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 				glDrawArrays(GL_LINES, n.index * 2, 2);
@@ -160,11 +170,6 @@ void RenderEngine::assignBuffers(Renderable& renderable) {
 	glBindVertexArray(0);
 }
 
-// Sets view matrix to new value provided
-void RenderEngine::setView(const glm::mat4& newView) {
-	view = newView;
-}
-
 // Sets projection and viewport for new width and height
 void RenderEngine::setWindowSize(int width, int height) {
 	this->width = width;
@@ -199,7 +204,13 @@ unsigned int RenderEngine::loadTexture(std::string filename) {
 	return id;
 }
 
+// Changes the active attribute texture
 void RenderEngine::swapAttributeTexture(int inc) {
 	activeID += inc;
 	activeID = activeID % attributeTextures.size();
+}
+
+// Toggles line drawing on and off
+void RenderEngine::toggleLineDrawing() {
+	lineDrawing = !lineDrawing;
 }
