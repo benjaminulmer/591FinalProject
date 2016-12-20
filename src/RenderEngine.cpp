@@ -1,7 +1,7 @@
 #include "RenderEngine.h"
 
 RenderEngine::RenderEngine(GLFWwindow* window) :
-	activeID(0), window(window), mode(Mode::COMBINED) {
+	activeID(0), window(window), mode(Mode::COMBINED), objectID(0) {
 
 	glfwGetWindowSize(window, &width, &height);
 
@@ -25,8 +25,10 @@ RenderEngine::~RenderEngine() {
 }
 
 // Stub for render call. Will be expanded
-void RenderEngine::render(Renderable& renderable) {
+void RenderEngine::render() {
 	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT); // TODO Currently done here. Needs to be moved up so only done once per frame
+
+	Renderable& renderable = *objects[objectID];
 
 	glBindVertexArray(renderable.vao);
 	glUseProgram(mainProgram);
@@ -41,7 +43,7 @@ void RenderEngine::render(Renderable& renderable) {
 	texture.bind2DTexture(mainProgram, attributeTextures[activeID], std::string("attr"));
 
 	if (renderable.textureID == 0) {
-		mode = Mode::IMAGE;
+		mode = Mode::ATTRIBUTE;
 	} // switch to attribute-only mode
 	else {
 		texture.bind2DTexture(mainProgram, renderable.textureID, std::string("image"));
@@ -215,5 +217,15 @@ void RenderEngine::swapAttributeTexture(int inc) {
 	else {
 		activeID += inc;
 		activeID = activeID % attributeTextures.size();
+	}
+}
+
+void RenderEngine::swapObject(int inc) {
+	if ((objectID == 0) && (inc < 0)) {
+		objectID = objects.size() + inc;
+	}
+	else {
+		objectID += inc;
+		objectID = objectID % objects.size();
 	}
 }

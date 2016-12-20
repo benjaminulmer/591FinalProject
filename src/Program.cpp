@@ -62,25 +62,17 @@ void Program::setupTextures() {
 
 // Main loop
 void Program::mainLoop() {
-	Renderable* r = ContentLoading::createRenderable("./models/Moblin.obj");
-	InputHandler::setCurRenderable(r);
-	r->initEdgeBuffer();
-	r->populateEdgeBuffer(camera->getPosition());
-
 	setupTextures();
-	r->textureID = (renderEngine->loadTexture("./textures/image/Moblin_body.png"));
-
-	renderEngine->assignBuffers(*r);
-	//r->show();
+	loadObjects();
 
 	while(!glfwWindowShouldClose(window)) {
 		glfwPollEvents();
 		renderEngine->setView(camera->getLookAt());
 
-		renderEngine->render(*r);
+		renderEngine->render();
 		glfwSwapBuffers(window);
 
-		r->populateEdgeBuffer(camera->getPosition());
+		renderEngine->objects[renderEngine->objectID]->populateEdgeBuffer(camera->getPosition());
 	}
 
 	// Clean up, program needs to exit
@@ -88,3 +80,29 @@ void Program::mainLoop() {
 	glfwTerminate();
 }
 
+void Program::loadObjects() {
+	Renderable* o = ContentLoading::createRenderable("./models/Moblin.obj");
+	o->textureID = (renderEngine->loadTexture("./textures/image/Moblin.png"));
+	renderEngine->objects.push_back(o);
+
+	o = ContentLoading::createRenderable("./models/Bokoblin.obj");
+	o->textureID = (renderEngine->loadTexture("./textures/image/Bokoblin.png"));
+	renderEngine->objects.push_back(o);
+
+	o = ContentLoading::createRenderable("./models/Helmaroc.obj");
+	o->textureID = (renderEngine->loadTexture("./textures/image/Helmaroc.png"));
+	renderEngine->objects.push_back(o);
+
+	// These two don't have textures associated with the models
+	renderEngine->objects.push_back(ContentLoading::createRenderable("./models/tree.obj"));
+	renderEngine->objects.push_back(ContentLoading::createRenderable("./models/Castle.obj"));
+
+	for (unsigned int i = 0; i < renderEngine->objects.size(); i++) {
+		Renderable* r = renderEngine->objects[i];
+		r->initEdgeBuffer();
+		r->populateEdgeBuffer(camera->getPosition());
+		renderEngine->assignBuffers(*r);
+	}
+
+	InputHandler::setCurRenderable(renderEngine->objects[0]);
+}
