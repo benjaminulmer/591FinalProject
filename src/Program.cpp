@@ -49,13 +49,13 @@ void Program::setupWindow() {
 
 // Initializes all attribute-based textures
 void Program::setupTextures() {
+	renderEngine->attributeTextures.push_back(renderEngine->loadTexture("./textures/attribute/orientation/greyscale.png"));
 	renderEngine->attributeTextures.push_back(renderEngine->loadTexture("./textures/attribute/orientation/fig-10b.png"));
 	renderEngine->attributeTextures.push_back(renderEngine->loadTexture("./textures/attribute/orientation/fig-10c.png"));
 	renderEngine->attributeTextures.push_back(renderEngine->loadTexture("./textures/attribute/orientation/fig-10d.png"));
 	renderEngine->attributeTextures.push_back(renderEngine->loadTexture("./textures/attribute/orientation/fig-11b.png"));
 	renderEngine->attributeTextures.push_back(renderEngine->loadTexture("./textures/attribute/orientation/fig-11c.png"));
 	renderEngine->attributeTextures.push_back(renderEngine->loadTexture("./textures/attribute/orientation/fig-11d.png"));
-	renderEngine->attributeTextures.push_back(renderEngine->loadTexture("./textures/attribute/orientation/transparent.png"));
 
 	renderEngine->activeID = 0;
 }

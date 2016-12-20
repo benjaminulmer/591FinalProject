@@ -30,9 +30,17 @@ void RenderEngine::render(const Renderable& renderable) {
 	glUseProgram(mainProgram);
 
 	//bind the texture
+	int multiply;
+	if (attributeTextures[activeID] == 1) {
+		multiply = 1;
+	}
+	else multiply = 0;
 	texture.bind2DTexture(mainProgram, attributeTextures[activeID], std::string("attr"));
+
 	if (renderable.textureID == NULL) { mode = 1; } // switch to attribute-only mode
-	else { texture.bind2DTexture(mainProgram, renderable.textureID, std::string("image")); }
+	else {
+		texture.bind2DTexture(mainProgram, renderable.textureID, std::string("image"));
+	}
 
 	glm::mat4 model = glm::mat4();
 	glm::mat4 modelView = view * model;
@@ -42,6 +50,7 @@ void RenderEngine::render(const Renderable& renderable) {
 	glUniformMatrix4fv(glGetUniformLocation(mainProgram, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 	glUniform3fv(glGetUniformLocation(mainProgram, "lightPos"), 1, glm::value_ptr(lightPos));
 	glUniform1i(glGetUniformLocation(mainProgram, "mode"), mode);
+	glUniform1i(glGetUniformLocation(mainProgram, "multiply"), multiply);
 
 
 	glDrawElements(GL_TRIANGLES, renderable.drawFaces.size(), GL_UNSIGNED_SHORT, (void*)0);

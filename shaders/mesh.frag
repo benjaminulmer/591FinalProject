@@ -3,8 +3,10 @@
 out vec4 colour;
 
 uniform sampler2D attr;
+uniform sampler2D mult;
 uniform sampler2D image;
 uniform int mode;
+uniform int multiply;
 //uniform float R;
 
 in vec3 N;
@@ -28,8 +30,10 @@ void main(void) {
 	/***** Image-based texturing *****/
 	vec4 imgColour = texture(image, UV);
 
-	if (mode == 0) colour = (attrColour * 0.5) + (imgColour * 0.5);
-	//if (mode == 0) colour = attrColour * imgColour;
+	if (mode == 0) {
+		if (multiply > 0) { colour = attrColour * imgColour; }
+		else { colour = (attrColour * 0.5) + (imgColour * 0.5); }
+	}
 	else if (mode == 1) colour = attrColour;
 	else if (mode == 2) colour = imgColour;
 }
