@@ -75,11 +75,10 @@ void Program::mainLoop() {
 	while(!glfwWindowShouldClose(window)) {
 		glfwPollEvents();
 		renderEngine->setView(camera->getLookAt());
+		r->populateEdgeBuffer(camera->getPosition());
 
 		renderEngine->render(*r);
 		glfwSwapBuffers(window);
-
-		r->populateEdgeBuffer(camera->getPosition());
 	}
 
 	// Clean up, program needs to exit

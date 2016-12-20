@@ -60,7 +60,10 @@ void RenderEngine::renderLines(Renderable& renderable) {
 	int i = 0;
 	for (std::list<Node>& l : edgeBuffer) {
 		for (Node& n : l) {
-			if ((n.front && n.back) || (n.angle > renderable.getLowerCountour() && n.angle < renderable.getUpperCountour())) {
+
+			bool artist = (n.angle > renderable.getLowerCountour() && n.angle < renderable.getUpperCountour());
+			// if (silhouette || artist edge || boundary edge)
+			if ((n.front && n.back) || artist || n.front != n.back) {
 				glUniformMatrix4fv(glGetUniformLocation(lineProgram, "view"), 1, GL_FALSE, glm::value_ptr(view));
 				glUniformMatrix4fv(glGetUniformLocation(lineProgram, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 				glDrawArrays(GL_LINES, n.index * 2, 2);

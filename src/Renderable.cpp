@@ -54,10 +54,10 @@ void Renderable::updateEdge(unsigned int vertex1, unsigned int vertex2, Facing f
 	for (Node& n : edgeBuffer[vertex1]) {
 		if (n.vertex == vertex2) {
 			if (facing == Facing::FRONT) {
-				n.front = true;
+				n.front = !n.front;
 			}
 			else {
-				n.back = true;
+				n.back = !n.back;
 			}
 			break;
 		}
