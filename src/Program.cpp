@@ -61,7 +61,7 @@ void Program::setupTextures() {
 
 // Main loop
 void Program::mainLoop() {
-	Renderable* r = ContentLoading::createRenderable("./models/tree.obj");
+	Renderable* r = ContentLoading::createRenderable("./models/Moblin.obj");
 	InputHandler::setCurRenderable(r);
 	r->initEdgeBuffer();
 	r->populateEdgeBuffer(camera->getPosition());

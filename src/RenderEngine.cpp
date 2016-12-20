@@ -48,7 +48,9 @@ void RenderEngine::render(Renderable& renderable) {
 	glBindVertexArray(0);
 	texture.unbind2DTexture();
 
-	renderLines(renderable);
+	if (lineDrawing) {
+		renderLines(renderable);
+	}
 	renderLight();
 }
 
