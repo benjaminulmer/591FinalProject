@@ -1,7 +1,7 @@
 #include "RenderEngine.h"
 
 RenderEngine::RenderEngine(GLFWwindow* window, Camera* camera) :
-	activeID(0), window(window), mode(Mode::COMBINED), camera(camera) {
+	activeID(0), objectID(0), window(window), mode(Mode::COMBINED), camera(camera) {
 
 	glfwGetWindowSize(window, &width, &height);
 
@@ -26,15 +26,29 @@ RenderEngine::~RenderEngine() {
 }
 
 // Stub for render call. Will be expanded
-void RenderEngine::render(Renderable& renderable) {
+void RenderEngine::render() {
 	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT); // TODO Currently done here. Needs to be moved up so only done once per frame
+
+	Renderable& renderable = *objects[objectID];
 
 	glBindVertexArray(renderable.vao);
 	glUseProgram(mainProgram);
 
-	// Bind the texture
+	//Bind the texture
+	int multiply;
+	if (attributeTextures[activeID] == 1) {
+		multiply = 1;
+	}
+	else multiply = 0;
+
 	texture.bind2DTexture(mainProgram, attributeTextures[activeID], std::string("attr"));
-	texture.bind2DTexture(mainProgram, renderable.textureID, std::string("image"));
+
+	if (renderable.textureID == 0) {
+		mode = Mode::ATTRIBUTE;
+	} // switch to attribute-only mode
+	else {
+		texture.bind2DTexture(mainProgram, renderable.textureID, std::string("image"));
+	}
 
 	view = camera->getLookAt();
 	glm::mat4 model = glm::mat4();
@@ -45,6 +59,8 @@ void RenderEngine::render(Renderable& renderable) {
 	glUniformMatrix4fv(glGetUniformLocation(mainProgram, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 	glUniform3fv(glGetUniformLocation(mainProgram, "lightPos"), 1, glm::value_ptr(lightPos));
 	glUniform1i(glGetUniformLocation(mainProgram, "mode"), (int)mode);
+	glUniform1i(glGetUniformLocation(mainProgram, "multiply"), multiply);
+
 
 	glDrawElements(GL_TRIANGLES, renderable.drawFaces.size(), GL_UNSIGNED_SHORT, (void*)0);
 	glBindVertexArray(0);
@@ -206,8 +222,23 @@ unsigned int RenderEngine::loadTexture(std::string filename) {
 
 // Changes the active attribute texture
 void RenderEngine::swapAttributeTexture(int inc) {
-	activeID += inc;
-	activeID = activeID % attributeTextures.size();
+	if ((activeID == 0) && (inc < 0)) {
+		activeID = attributeTextures.size() + inc;
+	}
+	else {
+		activeID += inc;
+		activeID = activeID % attributeTextures.size();
+	}
+}
+
+void RenderEngine::swapObject(int inc) {
+	if ((objectID == 0) && (inc < 0)) {
+		objectID = objects.size() + inc;
+	}
+	else {
+		objectID += inc;
+		objectID = objectID % objects.size();
+	}
 }
 
 // Toggles line drawing on and off

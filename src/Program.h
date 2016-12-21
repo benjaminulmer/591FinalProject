@@ -26,4 +26,5 @@ private:
 	void setupWindow();
 	void setupTextures();
 	void mainLoop();
+	void loadObjects();
 };

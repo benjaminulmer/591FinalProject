@@ -26,7 +26,7 @@ public:
 	RenderEngine(GLFWwindow* window, Camera* camera);
 	virtual ~RenderEngine();
 
-	void render(Renderable& renderable);
+	void render();
 	void assignBuffers(Renderable& renderable);
 	void setView(const glm::mat4& value);
 	void setWindowSize(int width, int height);
@@ -36,9 +36,12 @@ public:
 
 	unsigned int loadTexture(std::string filename);
 	void swapAttributeTexture(int inc);
+	void swapObject(int inc);
 
 	std::vector<GLuint> attributeTextures;
 	GLuint activeID;
+	std::vector<Renderable*> objects;
+	unsigned int objectID;
 
 private:
 	GLFWwindow* window;
