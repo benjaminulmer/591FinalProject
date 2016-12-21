@@ -12,6 +12,7 @@ out vec3 N;
 out vec3 L;
 out vec3 V;
 out vec2 UV;
+out float Z;
 
 void main(void) {	
 
@@ -31,6 +32,7 @@ void main(void) {
 	// Calculate L and V vectors
 	L = normalize(lightCameraSpace.xyz - P);
 	V = normalize(-P);
-
+	Z = -P.z;
+	
     gl_Position = projection * pCameraSpace;   
 }

@@ -1,7 +1,7 @@
 #include "RenderEngine.h"
 
 RenderEngine::RenderEngine(GLFWwindow* window) :
-	activeID(0), window(window), mode(Mode::COMBINED), objectID(0) {
+	attributeID(0), depthID(0), window(window), mode(Mode::COMBINED), objectID(0), attribute(Attribute::ORIENTATION) {
 
 	glfwGetWindowSize(window, &width, &height);
 
@@ -35,12 +35,17 @@ void RenderEngine::render() {
 
 	//Bind the texture
 	int multiply;
-	if (attributeTextures[activeID] == 1) {
+	if (attributeTextures[attributeID] == 1) {
 		multiply = 1;
 	}
 	else multiply = 0;
 
-	texture.bind2DTexture(mainProgram, attributeTextures[activeID], std::string("attr"));
+	if (attribute == Attribute::ORIENTATION) {
+		texture.bind2DTexture(mainProgram, attributeTextures[attributeID], std::string("attr"));
+	}
+	else {
+		texture.bind2DTexture(mainProgram, depthTextures[depthID], std::string("attr"));
+	}
 
 	if (renderable.textureID == 0) {
 		mode = Mode::ATTRIBUTE;
@@ -58,6 +63,7 @@ void RenderEngine::render() {
 	glUniform3fv(glGetUniformLocation(mainProgram, "lightPos"), 1, glm::value_ptr(lightPos));
 	glUniform1i(glGetUniformLocation(mainProgram, "mode"), (int)mode);
 	glUniform1i(glGetUniformLocation(mainProgram, "multiply"), multiply);
+	glUniform1i(glGetUniformLocation(mainProgram, "attrMode"), (int)attribute);
 
 
 	glDrawElements(GL_TRIANGLES, renderable.drawFaces.size(), GL_UNSIGNED_SHORT, (void*)0);
@@ -194,6 +200,18 @@ void RenderEngine::setMode(Mode newMode) {
 	mode = newMode;
 }
 
+// Switches between orientation and depth-based attribute mapping modes
+void RenderEngine::toggleAttributeMap() {
+	if (attribute == Attribute::DEPTH) {
+		attribute = Attribute::ORIENTATION;
+		std::cout << "Now in orientation-based mode" << std::endl;
+	}
+	else {
+		attribute = Attribute::DEPTH;
+		std::cout << "Now in depth-based mode" << std::endl;
+	}
+}
+
 // Creates a 2D texture
 unsigned int RenderEngine::loadTexture(std::string filename) {
 	//reading model texture image
@@ -211,12 +229,22 @@ unsigned int RenderEngine::loadTexture(std::string filename) {
 }
 
 void RenderEngine::swapAttributeTexture(int inc) {
-	if ((activeID == 0) && (inc < 0)) {
-		activeID = attributeTextures.size() + inc;
+	if ((attributeID == 0) && (inc < 0)) {
+		attributeID = attributeTextures.size() + inc;
 	}
 	else {
-		activeID += inc;
-		activeID = activeID % attributeTextures.size();
+		attributeID += inc;
+		attributeID = attributeID % attributeTextures.size();
+	}
+}
+
+void RenderEngine::swapDepthTexture(int inc) {
+	if ((depthID == 0) && (inc < 0)) {
+		depthID = depthTextures.size() + inc;
+	}
+	else {
+		depthID += inc;
+		depthID = depthID % depthTextures.size();
 	}
 }
 

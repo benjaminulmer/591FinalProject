@@ -19,6 +19,11 @@ enum class Mode {
 	IMAGE
 };
 
+enum class Attribute {
+	ORIENTATION,
+	DEPTH
+};
+
 class RenderEngine {
 
 public:
@@ -31,15 +36,21 @@ public:
 	void setWindowSize(int width, int height);
 	void updateLightPos(glm::vec3 add);
 	void setMode(Mode newMode);
+	void toggleAttributeMap();
 
 	unsigned int loadTexture(std::string filename);
 	void swapAttributeTexture(int inc);
+	void swapDepthTexture(int inc);
 	void swapObject(int inc);
 
 	std::vector<GLuint> attributeTextures;
-	GLuint activeID;
+	GLuint attributeID;
+	std::vector<GLuint> depthTextures;
+	GLuint depthID;
 	std::vector<Renderable*> objects;
 	unsigned int objectID;
+
+	Attribute attribute;
 
 private:
 	GLFWwindow* window;

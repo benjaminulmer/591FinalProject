@@ -43,10 +43,20 @@ void InputHandler::key(GLFWwindow* window, int key, int scancode, int action, in
 		renderEngine->setMode(Mode::IMAGE);
 	}
 	else if (key == GLFW_KEY_K && action == GLFW_PRESS) {
-		renderEngine->swapAttributeTexture(-1);
+		if (renderEngine->attribute == Attribute::ORIENTATION) {
+			renderEngine->swapAttributeTexture(-1);
+		}
+		else {
+			renderEngine->swapDepthTexture(-1);
+		}
 	}
 	else if (key == GLFW_KEY_L && action == GLFW_PRESS) {
-		renderEngine->swapAttributeTexture(1);
+		if (renderEngine->attribute == Attribute::ORIENTATION) {
+			renderEngine->swapAttributeTexture(1);
+		}
+		else {
+			renderEngine->swapDepthTexture(1);
+		}
 	}
 	else if (key == GLFW_KEY_1 && action == GLFW_PRESS) {
 		renderable->updateContourBounds(-5, 0);
@@ -67,6 +77,9 @@ void InputHandler::key(GLFWwindow* window, int key, int scancode, int action, in
 	else if (key == GLFW_KEY_X && action == GLFW_PRESS) {
 		renderEngine->swapObject(1);
 		setCurRenderable(renderEngine->objects[renderEngine->objectID]);
+	}
+	else if (key == GLFW_KEY_C && action == GLFW_PRESS) {
+		renderEngine->toggleAttributeMap();
 	}
 	else if (key == GLFW_KEY_ESCAPE) {
 		glfwDestroyWindow(window);

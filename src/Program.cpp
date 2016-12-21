@@ -49,6 +49,18 @@ void Program::setupWindow() {
 
 // Initializes all attribute-based textures
 void Program::setupTextures() {
+	renderEngine->depthTextures.push_back(renderEngine->loadTexture("./textures/attribute/depth/fig-7b.png"));
+	renderEngine->depthTextures.push_back(renderEngine->loadTexture("./textures/attribute/depth/fig-7c.png"));
+	renderEngine->depthTextures.push_back(renderEngine->loadTexture("./textures/attribute/depth/fig-7d.png"));
+	renderEngine->depthTextures.push_back(renderEngine->loadTexture("./textures/attribute/depth/fig-8a.png"));
+	renderEngine->depthTextures.push_back(renderEngine->loadTexture("./textures/attribute/depth/fig-8b.png"));
+	renderEngine->depthTextures.push_back(renderEngine->loadTexture("./textures/attribute/depth/fig-9b.png"));
+	renderEngine->depthTextures.push_back(renderEngine->loadTexture("./textures/attribute/depth/fig-9c.png"));
+	renderEngine->depthTextures.push_back(renderEngine->loadTexture("./textures/attribute/depth/fig-9e.png"));
+	renderEngine->depthTextures.push_back(renderEngine->loadTexture("./textures/attribute/depth/fig-9f.png"));
+
+	renderEngine->depthID = 0;
+
 	renderEngine->attributeTextures.push_back(renderEngine->loadTexture("./textures/attribute/orientation/greyscale.png"));
 	renderEngine->attributeTextures.push_back(renderEngine->loadTexture("./textures/attribute/orientation/fig-10b.png"));
 	renderEngine->attributeTextures.push_back(renderEngine->loadTexture("./textures/attribute/orientation/fig-10c.png"));
@@ -57,7 +69,7 @@ void Program::setupTextures() {
 	renderEngine->attributeTextures.push_back(renderEngine->loadTexture("./textures/attribute/orientation/fig-11c.png"));
 	renderEngine->attributeTextures.push_back(renderEngine->loadTexture("./textures/attribute/orientation/fig-11d.png"));
 
-	renderEngine->activeID = 0;
+	renderEngine->attributeID = 0;
 }
 
 // Main loop
