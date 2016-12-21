@@ -39,6 +39,7 @@ public:
 	void setMode(Mode newMode);
 	void toggleAttributeMap();
 	void toggleLineDrawing();
+	void toggleR(float inc);
 
 	unsigned int loadTexture(std::string filename);
 	void swapAttributeTexture(int inc);
@@ -76,5 +77,7 @@ private:
 	void renderLines(Renderable& renderable);
 	Texture texture;
 	void renderLight();
+
+	float r;
 };
 

@@ -2,7 +2,7 @@
 
 RenderEngine::RenderEngine(GLFWwindow* window, Camera* camera) :
 	attributeID(0), depthID(0), objectID(0), window(window), mode(Mode::COMBINED),
-	attribute(Attribute::ORIENTATION), camera(camera) {
+	attribute(Attribute::ORIENTATION), camera(camera), r(1.0) {
 
 
 	glfwGetWindowSize(window, &width, &height);
@@ -68,6 +68,7 @@ void RenderEngine::render() {
 	glUniform1i(glGetUniformLocation(mainProgram, "mode"), (int)mode);
 	glUniform1i(glGetUniformLocation(mainProgram, "multiply"), multiply);
 	glUniform1i(glGetUniformLocation(mainProgram, "attrMode"), (int)attribute);
+	glUniform1f(glGetUniformLocation(mainProgram, "R"), r);
 
 
 	glDrawElements(GL_TRIANGLES, renderable.drawFaces.size(), GL_UNSIGNED_SHORT, (void*)0);
@@ -274,4 +275,9 @@ void RenderEngine::swapObject(int inc) {
 // Toggles line drawing on and off
 void RenderEngine::toggleLineDrawing() {
 	lineDrawing = !lineDrawing;
+}
+
+void RenderEngine::toggleR(float inc) {
+	r += inc;
+	if (r < 0) r = 0;
 }

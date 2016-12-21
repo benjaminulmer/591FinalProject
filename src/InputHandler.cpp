@@ -84,6 +84,12 @@ void InputHandler::key(GLFWwindow* window, int key, int scancode, int action, in
 	else if (key == GLFW_KEY_C && action == GLFW_PRESS) {
 		renderEngine->toggleAttributeMap();
 	}
+	else if (key == GLFW_KEY_N && action == GLFW_PRESS) {
+		renderEngine->toggleR(-0.1);
+	}
+	else if (key == GLFW_KEY_M && action == GLFW_PRESS) {
+		renderEngine->toggleR(0.1);
+	}
 	else if (key == GLFW_KEY_ESCAPE) {
 		glfwDestroyWindow(window);
 		glfwTerminate();

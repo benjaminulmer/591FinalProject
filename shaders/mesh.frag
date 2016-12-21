@@ -8,7 +8,7 @@ uniform sampler2D image;
 uniform int mode;
 uniform int multiply;
 uniform int attrMode;
-//uniform float R;
+uniform float R;
 
 in vec3 N;
 in vec3 L;
@@ -28,7 +28,6 @@ void main(void) {
 	// Orientation-based attribute mapping
 	if (attrMode == 0) {
 		// y axis for texture coordinate
-		float R = 2.0;
 		float tone = 1 - pow(abs(dot(normalize(N), normalize(V))), R);
 	
 		attrColour = texture(attr, vec2(diffuse, tone));
