@@ -70,6 +70,9 @@ void InputHandler::key(GLFWwindow* window, int key, int scancode, int action, in
 	else if (key == GLFW_KEY_4 && action == GLFW_PRESS) {
 		renderable->updateContourBounds(0, 5);
 	}
+	else if (key == GLFW_KEY_5 && action == GLFW_PRESS) {
+		renderEngine->toggleLineDrawing();
+	}
 	else if (key == GLFW_KEY_Z && action == GLFW_PRESS) {
 		renderEngine->swapObject(-1);
 		setCurRenderable(renderEngine->objects[renderEngine->objectID]);

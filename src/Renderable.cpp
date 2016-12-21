@@ -20,13 +20,13 @@ Renderable::~Renderable() {
 
 // Updates the current contour bounds by the provided
 void Renderable::updateContourBounds(int lower, int upper) {
-	if (contourLower + lower >= 0) {
+	if (contourLower + lower >= 0 && contourLower + lower <= contourUpper) {
 		contourLower += lower;
 	}
-	if (contourUpper + upper <= 180) {
+	if (contourUpper + upper <= 180 && contourUpper + upper >= contourLower) {
 		contourUpper += upper;
 	}
-	std::cout << contourLower << " : " << contourUpper << std::endl;
+	std::cout << "Lower contour threshold: " << contourLower << "\tUpper contour threshold: " << contourUpper << std::endl;
 }
 
 // Inserts edge into edge buffer if it is not already present
@@ -54,10 +54,10 @@ void Renderable::updateEdge(unsigned int vertex1, unsigned int vertex2, Facing f
 	for (Node& n : edgeBuffer[vertex1]) {
 		if (n.vertex == vertex2) {
 			if (facing == Facing::FRONT) {
-				n.front = true;
+				n.front = !n.front;
 			}
 			else {
-				n.back = true;
+				n.back = !n.back;
 			}
 			break;
 		}

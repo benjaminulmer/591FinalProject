@@ -23,8 +23,8 @@ void Program::start() {
 		std::cerr << glewGetErrorString(err) << std::endl;
 	}
 
-	renderEngine = new RenderEngine(window);
 	camera = new Camera();
+	renderEngine = new RenderEngine(window, camera);
 	InputHandler::setUp(camera, renderEngine);
 	mainLoop();
 }
@@ -79,12 +79,9 @@ void Program::mainLoop() {
 
 	while(!glfwWindowShouldClose(window)) {
 		glfwPollEvents();
-		renderEngine->setView(camera->getLookAt());
-
+		renderEngine->objects[renderEngine->objectID]->populateEdgeBuffer(camera->getPosition());
 		renderEngine->render();
 		glfwSwapBuffers(window);
-
-		renderEngine->objects[renderEngine->objectID]->populateEdgeBuffer(camera->getPosition());
 	}
 
 	// Clean up, program needs to exit
