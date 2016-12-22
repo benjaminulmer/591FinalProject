@@ -10,7 +10,6 @@ float InputHandler::mouseOldY;
 void InputHandler::setUp(Camera* camera, RenderEngine* renderEngine) {
 	InputHandler::camera = camera;
 	InputHandler::renderEngine = renderEngine;
-	InputHandler::renderEngine = renderEngine;
 }
 
 // Callback for key presses
@@ -34,29 +33,28 @@ void InputHandler::key(GLFWwindow* window, int key, int scancode, int action, in
 		renderEngine->updateLightPos(glm::vec3(0.0, 0.0, -0.1));
 	}
 	else if (key == GLFW_KEY_I) {
-		renderEngine->setMode(Mode::COMBINED);
+		renderEngine->setMode(TextureMode::COMBINED);
 	}
 	else if (key == GLFW_KEY_O) {
-		renderEngine->setMode(Mode::ATTRIBUTE);
+		renderEngine->setMode(TextureMode::ATTRIBUTE);
 	}
 	else if (key == GLFW_KEY_P) {
-		renderEngine->setMode(Mode::IMAGE);
+		renderEngine->setMode(TextureMode::IMAGE);
 	}
 	else if (key == GLFW_KEY_K && action == GLFW_PRESS) {
-		if (renderEngine->attribute == Attribute::ORIENTATION) {
-			renderEngine->swapAttributeTexture(-1);
-		}
-		else {
-			renderEngine->swapDepthTexture(-1);
-		}
+		renderEngine->swapAttributeTexture(-1);
 	}
 	else if (key == GLFW_KEY_L && action == GLFW_PRESS) {
-		if (renderEngine->attribute == Attribute::ORIENTATION) {
-			renderEngine->swapAttributeTexture(1);
-		}
-		else {
-			renderEngine->swapDepthTexture(1);
-		}
+		renderEngine->swapAttributeTexture(1);
+	}
+	else if (key == GLFW_KEY_J && action == GLFW_PRESS) {
+		renderEngine->toggleAttributeMapMode();
+	}
+	else if (key == GLFW_KEY_N && action == GLFW_PRESS) {
+		renderEngine->updateR(-0.1);
+	}
+	else if (key == GLFW_KEY_M && action == GLFW_PRESS) {
+		renderEngine->updateR(0.1);
 	}
 	else if (key == GLFW_KEY_1 && action == GLFW_PRESS) {
 		renderable->updateContourBounds(-5, 0);
@@ -70,25 +68,14 @@ void InputHandler::key(GLFWwindow* window, int key, int scancode, int action, in
 	else if (key == GLFW_KEY_4 && action == GLFW_PRESS) {
 		renderable->updateContourBounds(0, 5);
 	}
-	else if (key == GLFW_KEY_5 && action == GLFW_PRESS) {
+	else if (key == GLFW_KEY_C && action == GLFW_PRESS) {
 		renderEngine->toggleLineDrawing();
 	}
 	else if (key == GLFW_KEY_Z && action == GLFW_PRESS) {
-		renderEngine->swapObject(-1);
-		setCurRenderable(renderEngine->objects[renderEngine->objectID]);
+		setCurRenderable(renderEngine->swapObject(-1));
 	}
 	else if (key == GLFW_KEY_X && action == GLFW_PRESS) {
-		renderEngine->swapObject(1);
-		setCurRenderable(renderEngine->objects[renderEngine->objectID]);
-	}
-	else if (key == GLFW_KEY_C && action == GLFW_PRESS) {
-		renderEngine->toggleAttributeMapMode();
-	}
-	else if (key == GLFW_KEY_N && action == GLFW_PRESS) {
-		renderEngine->updateR(-0.1);
-	}
-	else if (key == GLFW_KEY_M && action == GLFW_PRESS) {
-		renderEngine->updateR(0.1);
+		setCurRenderable(renderEngine->swapObject(1));
 	}
 	else if (key == GLFW_KEY_ESCAPE) {
 		glfwDestroyWindow(window);

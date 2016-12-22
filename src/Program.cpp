@@ -51,61 +51,61 @@ void Program::setupWindow() {
 
 // Initializes all attribute-based textures
 void Program::setupTextures() {
-	renderEngine->depthTextures.push_back(renderEngine->loadTexture("./textures/attribute/depth/fig-7b.png"));
-	renderEngine->depthTextures.push_back(renderEngine->loadTexture("./textures/attribute/depth/fig-7c.png"));
-	renderEngine->depthTextures.push_back(renderEngine->loadTexture("./textures/attribute/depth/fig-7d.png"));
-	renderEngine->depthTextures.push_back(renderEngine->loadTexture("./textures/attribute/depth/fig-8a.png"));
-	renderEngine->depthTextures.push_back(renderEngine->loadTexture("./textures/attribute/depth/fig-8b.png"));
-	renderEngine->depthTextures.push_back(renderEngine->loadTexture("./textures/attribute/depth/fig-9b.png"));
-	renderEngine->depthTextures.push_back(renderEngine->loadTexture("./textures/attribute/depth/fig-9c.png"));
-	renderEngine->depthTextures.push_back(renderEngine->loadTexture("./textures/attribute/depth/fig-9e.png"));
-	renderEngine->depthTextures.push_back(renderEngine->loadTexture("./textures/attribute/depth/fig-9f.png"));
+	std::vector<GLuint> orientationTextures;
+	orientationTextures.push_back(renderEngine->loadTexture("./textures/attribute/orientation/greyscale.png"));
+	orientationTextures.push_back(renderEngine->loadTexture("./textures/attribute/orientation/fig-10b.png"));
+	orientationTextures.push_back(renderEngine->loadTexture("./textures/attribute/orientation/fig-10c.png"));
+	orientationTextures.push_back(renderEngine->loadTexture("./textures/attribute/orientation/fig-10d.png"));
+	orientationTextures.push_back(renderEngine->loadTexture("./textures/attribute/orientation/fig-11b.png"));
+	orientationTextures.push_back(renderEngine->loadTexture("./textures/attribute/orientation/fig-11c.png"));
+	orientationTextures.push_back(renderEngine->loadTexture("./textures/attribute/orientation/fig-11d.png"));
 
-	renderEngine->depthID = 0;
+	std::vector<GLuint> depthTextures;
+	depthTextures.push_back(renderEngine->loadTexture("./textures/attribute/depth/fig-7b.png"));
+	depthTextures.push_back(renderEngine->loadTexture("./textures/attribute/depth/fig-7c.png"));
+	depthTextures.push_back(renderEngine->loadTexture("./textures/attribute/depth/fig-7d.png"));
+	depthTextures.push_back(renderEngine->loadTexture("./textures/attribute/depth/fig-8a.png"));
+	depthTextures.push_back(renderEngine->loadTexture("./textures/attribute/depth/fig-8b.png"));
+	depthTextures.push_back(renderEngine->loadTexture("./textures/attribute/depth/fig-9b.png"));
+	depthTextures.push_back(renderEngine->loadTexture("./textures/attribute/depth/fig-9c.png"));
+	depthTextures.push_back(renderEngine->loadTexture("./textures/attribute/depth/fig-9e.png"));
+	depthTextures.push_back(renderEngine->loadTexture("./textures/attribute/depth/fig-9f.png"));
 
-	renderEngine->attributeTextures.push_back(renderEngine->loadTexture("./textures/attribute/orientation/greyscale.png"));
-	renderEngine->attributeTextures.push_back(renderEngine->loadTexture("./textures/attribute/orientation/fig-10b.png"));
-	renderEngine->attributeTextures.push_back(renderEngine->loadTexture("./textures/attribute/orientation/fig-10c.png"));
-	renderEngine->attributeTextures.push_back(renderEngine->loadTexture("./textures/attribute/orientation/fig-10d.png"));
-	renderEngine->attributeTextures.push_back(renderEngine->loadTexture("./textures/attribute/orientation/fig-11b.png"));
-	renderEngine->attributeTextures.push_back(renderEngine->loadTexture("./textures/attribute/orientation/fig-11c.png"));
-	renderEngine->attributeTextures.push_back(renderEngine->loadTexture("./textures/attribute/orientation/fig-11d.png"));
-
-	renderEngine->attributeID = 0;
+	renderEngine->setTextures(orientationTextures, depthTextures);
 }
 
 void Program::loadObjects() {
+	std::vector<Renderable*> objects;
+
 	Renderable* o = ContentLoading::createRenderable("./models/Moblin.obj");
 	o->textureID = (renderEngine->loadTexture("./textures/image/Moblin.png"));
-	renderEngine->objects.push_back(o);
+	objects.push_back(o);
 
 	o = ContentLoading::createRenderable("./models/Bokoblin.obj");
 	o->textureID = (renderEngine->loadTexture("./textures/image/Bokoblin.png"));
-	renderEngine->objects.push_back(o);
+	objects.push_back(o);
 
 	o = ContentLoading::createRenderable("./models/Helmaroc.obj");
 	o->textureID = (renderEngine->loadTexture("./textures/image/Helmaroc.png"));
-	renderEngine->objects.push_back(o);
+	objects.push_back(o);
 
 	// These two don't have textures associated with the models
-	renderEngine->objects.push_back(ContentLoading::createRenderable("./models/tree.obj"));
-	renderEngine->objects.push_back(ContentLoading::createRenderable("./models/Castle.obj"));
+	objects.push_back(ContentLoading::createRenderable("./models/tree.obj"));
+	objects.push_back(ContentLoading::createRenderable("./models/Castle.obj"));
 
-	for (unsigned int i = 0; i < renderEngine->objects.size(); i++) {
-		Renderable* r = renderEngine->objects[i];
+	for (Renderable* r : objects) {
 		r->initEdgeBuffer();
-		r->populateEdgeBuffer(camera->getPosition());
 		renderEngine->assignBuffers(*r);
 	}
 
-	InputHandler::setCurRenderable(renderEngine->objects[0]);
+	InputHandler::setCurRenderable(objects[0]);
+	renderEngine->setObjects(objects);
 }
 
 // Main loop
 void Program::mainLoop() {
 	while(!glfwWindowShouldClose(window)) {
 		glfwPollEvents();
-		renderEngine->objects[renderEngine->objectID]->populateEdgeBuffer(camera->getPosition());
 		renderEngine->render();
 		glfwSwapBuffers(window);
 	}

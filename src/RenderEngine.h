@@ -14,13 +14,13 @@
 
 #include "lodepng.h"
 
-enum class Mode {
+enum class TextureMode {
 	COMBINED,
 	ATTRIBUTE,
 	IMAGE
 };
 
-enum class Attribute {
+enum class AttributeMode {
 	ORIENTATION,
 	DEPTH
 };
@@ -35,24 +35,17 @@ public:
 	void assignBuffers(Renderable& renderable);
 	unsigned int loadTexture(std::string filename);
 
+	void setTextures(std::vector<GLuint>& orientationTexs, std::vector<GLuint>& depthTexs);
+	void setObjects(std::vector<Renderable*> objs);
+
 	void setWindowSize(int width, int height);
 	void updateLightPos(glm::vec3 add);
-	void setMode(Mode newMode);
+	void setMode(TextureMode newMode);
 	void toggleAttributeMapMode();
 	void swapAttributeTexture(int inc);
-	void swapDepthTexture(int inc);
-	void swapObject(int inc);
+	Renderable* swapObject(int inc);
 	void toggleLineDrawing();
 	void updateR(float inc);
-
-	std::vector<GLuint> attributeTextures;
-	GLuint attributeID;
-	std::vector<GLuint> depthTextures;
-	GLuint depthID;
-	std::vector<Renderable*> objects;
-	unsigned int objectID;
-
-	Attribute attribute;
 
 private:
 	GLFWwindow* window;
@@ -62,15 +55,22 @@ private:
 	GLuint lineProgram;
 
 	//attribute or image mode
-	Mode mode;
-	bool lineDrawing = true;
+	TextureMode textureMode;
+	AttributeMode attributeMode;
+	bool lineDrawing;
+	float r;
 
 	Camera* camera;
 	glm::mat4 view;
 	glm::mat4 projection;
-
 	glm::vec3 lightPos;
-	float r;
+
+	std::vector<GLuint> orientationTextures;
+	GLuint orientationID;
+	std::vector<GLuint> depthTextures;
+	GLuint depthID;
+	std::vector<Renderable*> objects;
+	unsigned int objectID;
 
 	void renderLines(Renderable& renderable);
 	void renderLight();

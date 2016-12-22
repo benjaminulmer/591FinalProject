@@ -3,10 +3,9 @@
 out vec4 colour;
 
 uniform sampler2D attr;
-uniform sampler2D mult;
 uniform sampler2D image;
 uniform int mode;
-uniform int multiply;
+uniform bool multiply;
 uniform int attrMode;
 uniform float R;
 
@@ -46,7 +45,7 @@ void main(void) {
 	vec4 imgColour = texture(image, UV);
 
 	if (mode == 0) {
-		if (multiply > 0) { colour = attrColour * imgColour; }
+		if (multiply) { colour = attrColour * imgColour; }
 		else { colour = (attrColour * 0.5) + (imgColour * 0.5); }
 	}
 	else if (mode == 1) colour = attrColour;

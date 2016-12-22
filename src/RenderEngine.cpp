@@ -1,8 +1,8 @@
 #include "RenderEngine.h"
 
 RenderEngine::RenderEngine(GLFWwindow* window, Camera* camera) :
-	attributeID(0), depthID(0), objectID(0), attribute(Attribute::ORIENTATION),
-	window(window), mode(Mode::COMBINED), camera(camera), r(1.0) {
+	orientationID(0), depthID(0), objectID(0), window(window), textureMode(TextureMode::COMBINED),
+	attributeMode(AttributeMode::ORIENTATION), lineDrawing(true), camera(camera), r(1.0) {
 
 	int width, height;
 	glfwGetWindowSize(window, &width, &height);
@@ -27,7 +27,7 @@ RenderEngine::~RenderEngine() {
 
 // Stub for render call. Will be expanded
 void RenderEngine::render() {
-	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT); // TODO Currently done here. Needs to be moved up so only done once per frame
+	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
 	Renderable& renderable = *objects[objectID];
 
@@ -35,21 +35,23 @@ void RenderEngine::render() {
 	glUseProgram(mainProgram);
 
 	//Bind the texture
-	int multiply;
-	if (attributeTextures[attributeID] == 10) {
-		multiply = 1;
+	bool multiply;
+	if (orientationTextures[orientationID] == 10) {
+		multiply = true;
 	}
-	else multiply = 0;
+	else {
+		multiply = false;
+	}
 
-	if (attribute == Attribute::ORIENTATION) {
-		Texture::bind2DTexture(mainProgram, attributeTextures[attributeID], std::string("attr"));
+	if (attributeMode == AttributeMode::ORIENTATION) {
+		Texture::bind2DTexture(mainProgram, orientationTextures[orientationID], std::string("attr"));
 	}
 	else {
 		Texture::bind2DTexture(mainProgram, depthTextures[depthID], std::string("attr"));
 	}
 
 	if (renderable.textureID == 0) {
-		mode = Mode::ATTRIBUTE;
+		textureMode = TextureMode::ATTRIBUTE;
 	} // switch to attribute-only mode
 	else {
 		Texture::bind2DTexture(mainProgram, renderable.textureID, std::string("image"));
@@ -63,9 +65,9 @@ void RenderEngine::render() {
 	glUniformMatrix4fv(glGetUniformLocation(mainProgram, "modelView"), 1, GL_FALSE, glm::value_ptr(modelView));
 	glUniformMatrix4fv(glGetUniformLocation(mainProgram, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 	glUniform3fv(glGetUniformLocation(mainProgram, "lightPos"), 1, glm::value_ptr(lightPos));
-	glUniform1i(glGetUniformLocation(mainProgram, "mode"), (int)mode);
+	glUniform1i(glGetUniformLocation(mainProgram, "mode"), (int)textureMode);
 	glUniform1i(glGetUniformLocation(mainProgram, "multiply"), multiply);
-	glUniform1i(glGetUniformLocation(mainProgram, "attrMode"), (int)attribute);
+	glUniform1i(glGetUniformLocation(mainProgram, "attrMode"), (int)attributeMode);
 	glUniform1f(glGetUniformLocation(mainProgram, "R"), r);
 
 
@@ -74,6 +76,7 @@ void RenderEngine::render() {
 	Texture::unbind2DTexture();
 
 	if (lineDrawing) {
+		renderable.populateEdgeBuffer(camera->getPosition());
 		renderLines(renderable);
 	}
 	renderLight();
@@ -209,6 +212,15 @@ unsigned int RenderEngine::loadTexture(std::string filename) {
 	return id;
 }
 
+void RenderEngine::setTextures(std::vector<GLuint>& orientationTexs, std::vector<GLuint>& depthTexs) {
+	orientationTextures = std::vector<GLuint>(orientationTexs);
+	depthTextures = std::vector<GLuint>(depthTexs);
+}
+
+void RenderEngine::setObjects(std::vector<Renderable*> objs) {
+	objects = std::vector<Renderable*>(objs);
+}
+
 // Sets projection and viewport for new width and height
 void RenderEngine::setWindowSize(int width, int height) {
 	projection = glm::perspective(45.0f, (float)width/height, 0.01f, 100.0f);
@@ -221,44 +233,45 @@ void RenderEngine::updateLightPos(glm::vec3 add) {
 }
 
 // Switches between attribute and image-based texturing modes
-void RenderEngine::setMode(Mode newMode) {
-	mode = newMode;
+void RenderEngine::setMode(TextureMode newMode) {
+	textureMode = newMode;
 }
 
 // Switches between orientation and depth-based attribute mapping modes
 void RenderEngine::toggleAttributeMapMode() {
-	if (attribute == Attribute::DEPTH) {
-		attribute = Attribute::ORIENTATION;
+	if (attributeMode == AttributeMode::DEPTH) {
+		attributeMode = AttributeMode::ORIENTATION;
 		std::cout << "Now in orientation-based mode" << std::endl;
 	}
 	else {
-		attribute = Attribute::DEPTH;
+		attributeMode = AttributeMode::DEPTH;
 		std::cout << "Now in depth-based mode" << std::endl;
 	}
 }
 
 // Changes the active attribute texture
 void RenderEngine::swapAttributeTexture(int inc) {
-	if ((attributeID == 0) && (inc < 0)) {
-		attributeID = attributeTextures.size() + inc;
+	if (attributeMode == AttributeMode::ORIENTATION) {
+		if ((orientationID == 0) && (inc < 0)) {
+			orientationID = orientationTextures.size() + inc;
+		}
+		else {
+			orientationID += inc;
+			orientationID = orientationID % orientationTextures.size();
+		}
 	}
 	else {
-		attributeID += inc;
-		attributeID = attributeID % attributeTextures.size();
+		if ((depthID == 0) && (inc < 0)) {
+			depthID = depthTextures.size() + inc;
+		}
+		else {
+			depthID += inc;
+			depthID = depthID % depthTextures.size();
+		}
 	}
 }
 
-void RenderEngine::swapDepthTexture(int inc) {
-	if ((depthID == 0) && (inc < 0)) {
-		depthID = depthTextures.size() + inc;
-	}
-	else {
-		depthID += inc;
-		depthID = depthID % depthTextures.size();
-	}
-}
-
-void RenderEngine::swapObject(int inc) {
+Renderable* RenderEngine::swapObject(int inc) {
 	if ((objectID == 0) && (inc < 0)) {
 		objectID = objects.size() + inc;
 	}
@@ -266,6 +279,7 @@ void RenderEngine::swapObject(int inc) {
 		objectID += inc;
 		objectID = objectID % objects.size();
 	}
+	return objects[objectID];
 }
 
 // Toggles line drawing on and off
