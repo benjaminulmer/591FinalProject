@@ -29,7 +29,7 @@ void Renderable::updateContourBounds(int lower, int upper) {
 	std::cout << "Lower contour threshold: " << contourLower << "\tUpper contour threshold: " << contourUpper << std::endl;
 }
 
-//
+// Update the thickness of lines by the provided
 void Renderable::updateLineThickness(float inc) {
 	if (lineThickness + inc >= 0.5) {
 		lineThickness += inc;
@@ -42,6 +42,8 @@ void Renderable::insertEdge(unsigned int vertex1, unsigned int vertex2, std::vec
 	bool found = false;
 	int i = 0;
 	for (Node& n : edgeBuffer[vertex1]) {
+
+		// Edge already in buffer. Use temp buffer to calculate angle
 		if (n.vertex == vertex2) {
 			found = true;
 			std::list<glm::vec3>::iterator it = std::next(tempBuffer[vertex1].begin(), i);
@@ -51,6 +53,7 @@ void Renderable::insertEdge(unsigned int vertex1, unsigned int vertex2, std::vec
 		}
 		i++;
 	}
+	// Not in buffer already. Add edge to buffer and add normal to the temp buffer
 	if (!found) {
 		edgeBuffer[vertex1].push_back(Node(vertex2));
 		tempBuffer[vertex1].push_back(normal);
@@ -75,6 +78,10 @@ void Renderable::updateEdge(unsigned int vertex1, unsigned int vertex2, Facing f
 // Initialize edge buffer data structure
 void Renderable::initEdgeBuffer() {
 	edgeBuffer = std::vector<std::list<Node>>(verts.size() - 1);
+
+	// Temporary struct that will store the normal of the first face connecte to the edge.
+	// When the edge is visited again this normal will be used with the current face normal
+	// to calculate the angle of the edge (angle between the two faces)
 	std::vector<std::list<glm::vec3>> tempBuffer(verts.size() - 1);
 
 	for (unsigned int i = 0; i < faces.size(); i += 3) {
@@ -128,35 +135,6 @@ void Renderable::populateEdgeBuffer(glm::vec3 eye) {
 			updateEdge(face[1], face[2], Facing::BACK);
 		}
 	}
-}
-
-void Renderable::clearEdgeBuffer() {
-	for (std::list<Node>& l : edgeBuffer) {
-		for (Node& n : l) {
-			n.front = false;
-			n.back = false;
-		}
-	}
-}
-
-// Returns dimensions of object (bounding box dimensions)
-glm::vec3 Renderable::getDimensions() {
-	float minX, maxX;
-	float minY, maxY;
-	float minZ, maxZ;
-	minX = maxX = verts.at(0).x;
-	minY = maxY = verts.at(0).y;
-	minZ = maxZ = verts.at(0).z;
-	for (unsigned int i = 1; i < verts.size(); i++) {
-		glm::vec3 v = verts.at(i);
-		minX = glm::min(minX, v.x);
-		maxX = glm::max(maxX, v.x);
-		minY = glm::min(minY, v.y);
-		maxY = glm::max(maxY, v.y);
-		minZ = glm::min(minZ, v.z);
-		maxZ = glm::max(maxZ, v.z);
-	}
-	return glm::vec3(glm::abs(maxX-minX), glm::abs(maxY-minY), glm::abs(maxZ-minZ));
 }
 
 // Prints edge buffer to console. For debugging and testing only

@@ -26,15 +26,15 @@ RenderEngine::~RenderEngine() {
 	// nothing to do here, program will clean up window pointer
 }
 
-// Stub for render call. Will be expanded
+// Called to render the active object. RenderEngine stores all information about how to render
 void RenderEngine::render() {
 	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 
 	Renderable& renderable = *objects[objectID];
-
 	glBindVertexArray(renderable.vao);
 	glUseProgram(mainProgram);
 
+	// Determine which attribute texture to use
 	if (attributeMode == AttributeMode::ORIENTATION) {
 		if (colourMode == ColourMode::COLOUR) {
 			Texture::bind2DTexture(mainProgram, orientationTextures[orientationID], std::string("attr"));
@@ -52,9 +52,10 @@ void RenderEngine::render() {
 		}
 	}
 
+	// If the object has no image texture switch to attribute only mode
 	if (renderable.textureID == 0) {
 		textureMode = TextureMode::ATTRIBUTE;
-	} // switch to attribute-only mode
+	}
 	else {
 		Texture::bind2DTexture(mainProgram, renderable.textureID, std::string("image"));
 	}
@@ -76,6 +77,7 @@ void RenderEngine::render() {
 	Texture::unbind2DTexture();
 
 	if (lineDrawing) {
+		// Only populate if going to render
 		renderable.populateEdgeBuffer(camera->getPosition());
 		renderLines(renderable);
 	}
@@ -92,6 +94,7 @@ void RenderEngine::renderLines(Renderable& renderable) {
 	for (std::list<Node>& l : edgeBuffer) {
 		for (Node& n : l) {
 
+			// Artist edge only determined by contours bounds. Other ways of determining could be used
 			bool artist = (n.angle > renderable.getLowerCountour() && n.angle < renderable.getUpperCountour());
 			// if (silhouette || artist edge || boundary edge)
 			if ((n.front && n.back) || artist || n.front != n.back) {
@@ -106,6 +109,7 @@ void RenderEngine::renderLines(Renderable& renderable) {
 				glUniformMatrix4fv(glGetUniformLocation(lineProgram, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 				glDrawArrays(GL_LINES, n.index * 2, 2);
 			}
+			// Reset the edge buffer flags
 			n.front = false;
 			n.back = false;
 		}
@@ -212,6 +216,7 @@ unsigned int RenderEngine::loadTexture(std::string filename) {
 	return id;
 }
 
+// Sets the (attribute-based) textures that will be used when rendering
 void RenderEngine::setTextures(std::vector<GLuint>& orientationTexs, std::vector<GLuint>& orientationTexsGS,
 	                           std::vector<GLuint>& depthTexs, std::vector<GLuint>& depthTexsGS) {
 
@@ -221,6 +226,7 @@ void RenderEngine::setTextures(std::vector<GLuint>& orientationTexs, std::vector
 	depthTexturesGrey = std::vector<GLuint>(depthTexsGS);
 }
 
+// Sets the objects that will be used when rendering
 void RenderEngine::setObjects(std::vector<Renderable*> objs) {
 	objects = std::vector<Renderable*>(objs);
 }
@@ -236,7 +242,7 @@ void RenderEngine::updateLightPos(glm::vec3 add) {
 	lightPos += add;
 }
 
-// Switches between attribute and image-based texturing modes
+// Switches the way textures are combined when rendering
 void RenderEngine::setTextureMode(TextureMode newMode) {
 	textureMode = newMode;
 	if (textureMode == TextureMode::MULTIPLICATIVE) std::cout << "Combining textures multiplicatively" << std::endl;
@@ -257,6 +263,7 @@ void RenderEngine::toggleAttributeMapMode() {
 	}
 }
 
+// Switched between colour and greyscale verions of the textures
 void RenderEngine::toggleColourMode() {
 	if (colourMode == ColourMode::COLOUR) {
 		colourMode = ColourMode::GREYSCALE;
@@ -290,6 +297,7 @@ void RenderEngine::swapAttributeTexture(int inc) {
 	}
 }
 
+// Changes the active object to be rendered
 Renderable* RenderEngine::swapObject(int inc) {
 	if ((objectID == 0) && (inc < 0)) {
 		objectID = objects.size() + inc;
@@ -308,6 +316,7 @@ void RenderEngine::toggleLineDrawing() {
 	else std::cout << "Line drawing off" << std::endl;
 }
 
+// Updates the value of r (orientation-mapping)
 void RenderEngine::updateR(float inc) {
 	r += inc;
 	if (r < 0) r = 0;

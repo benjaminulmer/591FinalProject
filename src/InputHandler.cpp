@@ -14,6 +14,7 @@ void InputHandler::setUp(Camera* camera, RenderEngine* renderEngine) {
 
 // Callback for key presses
 void InputHandler::key(GLFWwindow* window, int key, int scancode, int action, int mods) {
+	// Light controls
 	if (key == GLFW_KEY_W) {
 		renderEngine->updateLightPos(glm::vec3(0.0, 0.1, 0.0));
 	}
@@ -32,6 +33,7 @@ void InputHandler::key(GLFWwindow* window, int key, int scancode, int action, in
 	else if (key == GLFW_KEY_Q) {
 		renderEngine->updateLightPos(glm::vec3(0.0, 0.0, -0.1));
 	}
+	// Attribute mode
 	else if (key == GLFW_KEY_U && action == GLFW_PRESS) {
 		renderEngine->setTextureMode(TextureMode::MULTIPLICATIVE);
 	}
@@ -44,6 +46,7 @@ void InputHandler::key(GLFWwindow* window, int key, int scancode, int action, in
 	else if (key == GLFW_KEY_P && action == GLFW_PRESS) {
 		renderEngine->setTextureMode(TextureMode::IMAGE);
 	}
+	// Texture swapping
 	else if (key == GLFW_KEY_K && action == GLFW_PRESS) {
 		renderEngine->swapAttributeTexture(-1);
 	}
@@ -56,12 +59,14 @@ void InputHandler::key(GLFWwindow* window, int key, int scancode, int action, in
 	else if (key == GLFW_KEY_H && action == GLFW_PRESS) {
 		renderEngine->toggleColourMode();
 	}
+	// Shading variables
 	else if (key == GLFW_KEY_N && action == GLFW_PRESS) {
 		renderEngine->updateR(-0.1);
 	}
 	else if (key == GLFW_KEY_M && action == GLFW_PRESS) {
 		renderEngine->updateR(0.1);
 	}
+	// Line variables
 	else if (key == GLFW_KEY_1 && action == GLFW_PRESS) {
 		renderable->updateContourBounds(-5, 0);
 	}
@@ -83,6 +88,7 @@ void InputHandler::key(GLFWwindow* window, int key, int scancode, int action, in
 	else if (key == GLFW_KEY_C && action == GLFW_PRESS) {
 		renderEngine->toggleLineDrawing();
 	}
+	// Object swapping
 	else if (key == GLFW_KEY_Z && action == GLFW_PRESS) {
 		setCurRenderable(renderEngine->swapObject(-1));
 	}

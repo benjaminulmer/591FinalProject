@@ -92,6 +92,7 @@ void Program::setupTextures() {
 	renderEngine->setTextures(orientationTextures, orientationTexturesGrey, depthTextures, depthTexturesGrey);
 }
 
+// Loads and initializes all objects that can be viewed
 void Program::loadObjects() {
 	std::vector<Renderable*> objects;
 
@@ -111,6 +112,7 @@ void Program::loadObjects() {
 	objects.push_back(ContentLoading::createRenderable("./models/Tree.obj"));
 	objects.push_back(ContentLoading::createRenderable("./models/Castle.obj"));
 
+	// Send each object to GPU and initialize edge buffer
 	for (Renderable* r : objects) {
 		r->initEdgeBuffer();
 		renderEngine->assignBuffers(*r);

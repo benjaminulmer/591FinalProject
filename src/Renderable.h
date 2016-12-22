@@ -55,9 +55,7 @@ public:
 	float getLineThickness() {return lineThickness;}
 	void initEdgeBuffer();
 	void populateEdgeBuffer(glm::vec3 eye);
-	void clearEdgeBuffer();
 	std::vector<std::list<Node>>& getEdgeBuffer() {return edgeBuffer;};
-	glm::vec3 getDimensions();
 
 	void show();
 
