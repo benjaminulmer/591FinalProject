@@ -38,7 +38,7 @@ void RenderEngine::render() {
 
 	//Bind the texture
 	int multiply;
-	if (attributeTextures[attributeID] == 1) {
+	if (attributeTextures[attributeID] == 10) {
 		multiply = 1;
 	}
 	else multiply = 0;
