@@ -267,11 +267,11 @@ void RenderEngine::toggleAttributeMapMode() {
 void RenderEngine::toggleColourMode() {
 	if (colourMode == ColourMode::COLOUR) {
 		colourMode = ColourMode::GREYSCALE;
-		std::cout << "Now using greyscale version of textures" << std::endl;
+		std::cout << "Now using greyscale version of attribute-based textures" << std::endl;
 	}
 	else {
 		colourMode = ColourMode::COLOUR;
-		std::cout << "Now using coloured version of textures" << std::endl;
+		std::cout << "Now using coloured version of attribute-based textures" << std::endl;
 	}
 }
 

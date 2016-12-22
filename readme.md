@@ -37,4 +37,5 @@ X: Use next object
 
 Compiling and Running
 =====================
-need to do yet
+Runing the executable 'run' will clean, make, and run the project  
+Command: ./run  

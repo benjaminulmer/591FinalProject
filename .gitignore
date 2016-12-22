@@ -7,3 +7,5 @@
 !/shaders
 !/textures
 !/.gitignore
+!*.md
+!run
