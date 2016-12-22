@@ -1,8 +1,8 @@
 #include "RenderEngine.h"
 
 RenderEngine::RenderEngine(GLFWwindow* window, Camera* camera) :
-	orientationID(0), depthID(0), objectID(0), window(window), textureMode(TextureMode::COMBINED),
-	attributeMode(AttributeMode::ORIENTATION), lineDrawing(true), camera(camera), r(1.0) {
+	window(window),textureMode(TextureMode::COMBINED), attributeMode(AttributeMode::ORIENTATION),
+	lineDrawing(true), r(1.0), camera(camera), orientationID(0), depthID(0), objectID(0) {
 
 	int width, height;
 	glfwGetWindowSize(window, &width, &height);
@@ -36,7 +36,7 @@ void RenderEngine::render() {
 
 	//Bind the texture
 	bool multiply;
-	if (orientationTextures[orientationID] == 10) {
+	if (orientationTextures[orientationID] == 1) {
 		multiply = true;
 	}
 	else {
