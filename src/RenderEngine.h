@@ -10,8 +10,8 @@
 #include "ShaderTools.h"
 #include "Renderable.h"
 #include "Camera.h"
+#include "Texture.h"
 
-#include "texture.h"
 #include "lodepng.h"
 
 enum class Mode {
@@ -33,18 +33,17 @@ public:
 
 	void render();
 	void assignBuffers(Renderable& renderable);
-	void setView(const glm::mat4& value);
+	unsigned int loadTexture(std::string filename);
+
 	void setWindowSize(int width, int height);
 	void updateLightPos(glm::vec3 add);
 	void setMode(Mode newMode);
-	void toggleAttributeMap();
-	void toggleLineDrawing();
-	void toggleR(float inc);
-
-	unsigned int loadTexture(std::string filename);
+	void toggleAttributeMapMode();
 	void swapAttributeTexture(int inc);
 	void swapDepthTexture(int inc);
 	void swapObject(int inc);
+	void toggleLineDrawing();
+	void updateR(float inc);
 
 	std::vector<GLuint> attributeTextures;
 	GLuint attributeID;
@@ -57,8 +56,6 @@ public:
 
 private:
 	GLFWwindow* window;
-	int width;
-	int height;
 
 	GLuint mainProgram;
 	GLuint lightProgram;
@@ -73,11 +70,9 @@ private:
 	glm::mat4 projection;
 
 	glm::vec3 lightPos;
+	float r;
 
 	void renderLines(Renderable& renderable);
-	Texture texture;
 	void renderLight();
-
-	float r;
 };
 

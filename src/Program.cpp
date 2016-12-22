@@ -26,6 +26,8 @@ void Program::start() {
 	camera = new Camera();
 	renderEngine = new RenderEngine(window, camera);
 	InputHandler::setUp(camera, renderEngine);
+	setupTextures();
+	loadObjects();
 	mainLoop();
 }
 
@@ -72,23 +74,6 @@ void Program::setupTextures() {
 	renderEngine->attributeID = 0;
 }
 
-// Main loop
-void Program::mainLoop() {
-	setupTextures();
-	loadObjects();
-
-	while(!glfwWindowShouldClose(window)) {
-		glfwPollEvents();
-		renderEngine->objects[renderEngine->objectID]->populateEdgeBuffer(camera->getPosition());
-		renderEngine->render();
-		glfwSwapBuffers(window);
-	}
-
-	// Clean up, program needs to exit
-	glfwDestroyWindow(window);
-	glfwTerminate();
-}
-
 void Program::loadObjects() {
 	Renderable* o = ContentLoading::createRenderable("./models/Moblin.obj");
 	o->textureID = (renderEngine->loadTexture("./textures/image/Moblin.png"));
@@ -114,4 +99,18 @@ void Program::loadObjects() {
 	}
 
 	InputHandler::setCurRenderable(renderEngine->objects[0]);
+}
+
+// Main loop
+void Program::mainLoop() {
+	while(!glfwWindowShouldClose(window)) {
+		glfwPollEvents();
+		renderEngine->objects[renderEngine->objectID]->populateEdgeBuffer(camera->getPosition());
+		renderEngine->render();
+		glfwSwapBuffers(window);
+	}
+
+	// Clean up, program needs to exit
+	glfwDestroyWindow(window);
+	glfwTerminate();
 }

@@ -1,10 +1,10 @@
 #include "RenderEngine.h"
 
 RenderEngine::RenderEngine(GLFWwindow* window, Camera* camera) :
-	attributeID(0), depthID(0), objectID(0), window(window), mode(Mode::COMBINED),
-	attribute(Attribute::ORIENTATION), camera(camera), r(1.0) {
+	attributeID(0), depthID(0), objectID(0), attribute(Attribute::ORIENTATION),
+	window(window), mode(Mode::COMBINED), camera(camera), r(1.0) {
 
-
+	int width, height;
 	glfwGetWindowSize(window, &width, &height);
 
 	mainProgram = ShaderTools::compileShaders("./shaders/mesh.vert", "./shaders/mesh.frag");
@@ -19,8 +19,6 @@ RenderEngine::RenderEngine(GLFWwindow* window, Camera* camera) :
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_LINE_SMOOTH);
 	glClearColor(0.3, 0.3, 0.4, 0.0);
-	glLineWidth(2.0f);
-	glPointSize(30.0f);
 }
 
 RenderEngine::~RenderEngine() {
@@ -44,17 +42,17 @@ void RenderEngine::render() {
 	else multiply = 0;
 
 	if (attribute == Attribute::ORIENTATION) {
-		texture.bind2DTexture(mainProgram, attributeTextures[attributeID], std::string("attr"));
+		Texture::bind2DTexture(mainProgram, attributeTextures[attributeID], std::string("attr"));
 	}
 	else {
-		texture.bind2DTexture(mainProgram, depthTextures[depthID], std::string("attr"));
+		Texture::bind2DTexture(mainProgram, depthTextures[depthID], std::string("attr"));
 	}
 
 	if (renderable.textureID == 0) {
 		mode = Mode::ATTRIBUTE;
 	} // switch to attribute-only mode
 	else {
-		texture.bind2DTexture(mainProgram, renderable.textureID, std::string("image"));
+		Texture::bind2DTexture(mainProgram, renderable.textureID, std::string("image"));
 	}
 
 	view = camera->getLookAt();
@@ -73,7 +71,7 @@ void RenderEngine::render() {
 
 	glDrawElements(GL_TRIANGLES, renderable.drawFaces.size(), GL_UNSIGNED_SHORT, (void*)0);
 	glBindVertexArray(0);
-	texture.unbind2DTexture();
+	Texture::unbind2DTexture();
 
 	if (lineDrawing) {
 		renderLines(renderable);
@@ -195,10 +193,24 @@ void RenderEngine::assignBuffers(Renderable& renderable) {
 	glBindVertexArray(0);
 }
 
+// Creates a 2D texture
+unsigned int RenderEngine::loadTexture(std::string filename) {
+	//reading model texture image
+	std::vector<unsigned char> _image;
+	unsigned int _imageWidth, _imageHeight;
+
+	unsigned int error = lodepng::decode(_image, _imageWidth, _imageHeight, filename.c_str());
+	if (error)
+	{
+		std::cout << "reading error" << error << ":" << lodepng_error_text(error) << std::endl;
+	}
+
+	unsigned int id = Texture::create2DTexture(_image, _imageWidth, _imageHeight);
+	return id;
+}
+
 // Sets projection and viewport for new width and height
 void RenderEngine::setWindowSize(int width, int height) {
-	this->width = width;
-	this->height = height;
 	projection = glm::perspective(45.0f, (float)width/height, 0.01f, 100.0f);
 	glViewport(0, 0, width, height);
 }
@@ -214,7 +226,7 @@ void RenderEngine::setMode(Mode newMode) {
 }
 
 // Switches between orientation and depth-based attribute mapping modes
-void RenderEngine::toggleAttributeMap() {
+void RenderEngine::toggleAttributeMapMode() {
 	if (attribute == Attribute::DEPTH) {
 		attribute = Attribute::ORIENTATION;
 		std::cout << "Now in orientation-based mode" << std::endl;
@@ -223,22 +235,6 @@ void RenderEngine::toggleAttributeMap() {
 		attribute = Attribute::DEPTH;
 		std::cout << "Now in depth-based mode" << std::endl;
 	}
-}
-
-// Creates a 2D texture
-unsigned int RenderEngine::loadTexture(std::string filename) {
-	//reading model texture image
-	std::vector<unsigned char> _image;
-	unsigned int _imageWidth, _imageHeight;
-
-	unsigned int error = lodepng::decode(_image, _imageWidth, _imageHeight, filename.c_str());
-	if (error)
-	{
-		std::cout << "reading error" << error << ":" << lodepng_error_text(error) << std::endl;
-	}
-
-	unsigned int id = texture.create2DTexture(_image, _imageWidth, _imageHeight);
-	return id;
 }
 
 // Changes the active attribute texture
@@ -277,7 +273,7 @@ void RenderEngine::toggleLineDrawing() {
 	lineDrawing = !lineDrawing;
 }
 
-void RenderEngine::toggleR(float inc) {
+void RenderEngine::updateR(float inc) {
 	r += inc;
 	if (r < 0) r = 0;
 }
