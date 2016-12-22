@@ -32,14 +32,17 @@ void InputHandler::key(GLFWwindow* window, int key, int scancode, int action, in
 	else if (key == GLFW_KEY_Q) {
 		renderEngine->updateLightPos(glm::vec3(0.0, 0.0, -0.1));
 	}
-	else if (key == GLFW_KEY_I) {
-		renderEngine->setMode(TextureMode::COMBINED);
+	else if (key == GLFW_KEY_U && action == GLFW_PRESS) {
+		renderEngine->setTextureMode(TextureMode::MULTIPLICATIVE);
 	}
-	else if (key == GLFW_KEY_O) {
-		renderEngine->setMode(TextureMode::ATTRIBUTE);
+	else if (key == GLFW_KEY_I && action == GLFW_PRESS) {
+		renderEngine->setTextureMode(TextureMode::ADDITIVE);
 	}
-	else if (key == GLFW_KEY_P) {
-		renderEngine->setMode(TextureMode::IMAGE);
+	else if (key == GLFW_KEY_O && action == GLFW_PRESS) {
+		renderEngine->setTextureMode(TextureMode::ATTRIBUTE);
+	}
+	else if (key == GLFW_KEY_P && action == GLFW_PRESS) {
+		renderEngine->setTextureMode(TextureMode::IMAGE);
 	}
 	else if (key == GLFW_KEY_K && action == GLFW_PRESS) {
 		renderEngine->swapAttributeTexture(-1);
@@ -49,6 +52,9 @@ void InputHandler::key(GLFWwindow* window, int key, int scancode, int action, in
 	}
 	else if (key == GLFW_KEY_J && action == GLFW_PRESS) {
 		renderEngine->toggleAttributeMapMode();
+	}
+	else if (key == GLFW_KEY_H && action == GLFW_PRESS) {
+		renderEngine->toggleColourMode();
 	}
 	else if (key == GLFW_KEY_N && action == GLFW_PRESS) {
 		renderEngine->updateR(-0.1);
@@ -67,6 +73,12 @@ void InputHandler::key(GLFWwindow* window, int key, int scancode, int action, in
 	}
 	else if (key == GLFW_KEY_4 && action == GLFW_PRESS) {
 		renderable->updateContourBounds(0, 5);
+	}
+	else if (key == GLFW_KEY_5 && action == GLFW_PRESS) {
+		renderable->updateLineThickness(-0.5f);
+	}
+	else if (key == GLFW_KEY_6 && action == GLFW_PRESS) {
+		renderable->updateLineThickness(0.5f);
 	}
 	else if (key == GLFW_KEY_C && action == GLFW_PRESS) {
 		renderEngine->toggleLineDrawing();

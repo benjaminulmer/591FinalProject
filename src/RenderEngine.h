@@ -15,7 +15,8 @@
 #include "lodepng.h"
 
 enum class TextureMode {
-	COMBINED,
+	MULTIPLICATIVE,
+	ADDITIVE,
 	ATTRIBUTE,
 	IMAGE
 };
@@ -25,6 +26,11 @@ enum class AttributeMode {
 	DEPTH
 };
 
+enum class ColourMode {
+	COLOUR,
+	GREYSCALE
+};
+
 class RenderEngine {
 
 public:
@@ -32,16 +38,18 @@ public:
 	virtual ~RenderEngine();
 
 	void render();
+	void setWindowSize(int width, int height);
 	void assignBuffers(Renderable& renderable);
 	unsigned int loadTexture(std::string filename);
 
-	void setTextures(std::vector<GLuint>& orientationTexs, std::vector<GLuint>& depthTexs);
+	void setTextures(std::vector<GLuint>& orientationTexs, std::vector<GLuint>& orientationTexsGS,
+		             std::vector<GLuint>& depthTexs, std::vector<GLuint>& depthTexsGS);
 	void setObjects(std::vector<Renderable*> objs);
 
-	void setWindowSize(int width, int height);
 	void updateLightPos(glm::vec3 add);
-	void setMode(TextureMode newMode);
+	void setTextureMode(TextureMode newMode);
 	void toggleAttributeMapMode();
+	void toggleColourMode();
 	void swapAttributeTexture(int inc);
 	Renderable* swapObject(int inc);
 	void toggleLineDrawing();
@@ -57,6 +65,7 @@ private:
 	//attribute or image mode
 	TextureMode textureMode;
 	AttributeMode attributeMode;
+	ColourMode colourMode;
 	bool lineDrawing;
 	float r;
 
@@ -66,8 +75,10 @@ private:
 	glm::vec3 lightPos;
 
 	std::vector<GLuint> orientationTextures;
+	std::vector<GLuint> orientationTexturesGrey;
 	GLuint orientationID;
 	std::vector<GLuint> depthTextures;
+	std::vector<GLuint> depthTexturesGrey;
 	GLuint depthID;
 	std::vector<Renderable*> objects;
 	unsigned int objectID;

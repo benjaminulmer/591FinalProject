@@ -4,8 +4,7 @@ out vec4 colour;
 
 uniform sampler2D attr;
 uniform sampler2D image;
-uniform int mode;
-uniform bool multiply;
+uniform int texMode;
 uniform int attrMode;
 uniform float R;
 
@@ -16,8 +15,7 @@ in vec2 UV;
 in float Z;
 
 void main(void) {    	
-
-	vec4 colourImage;
+;
 	vec4 attrColour;
 
 	/***** Attribute-based texturing *****/
@@ -44,10 +42,16 @@ void main(void) {
 	/***** Image-based texturing *****/
 	vec4 imgColour = texture(image, UV);
 
-	if (mode == 0) {
-		if (multiply) { colour = attrColour * imgColour; }
-		else { colour = (attrColour * 0.5) + (imgColour * 0.5); }
+	if (texMode == 0) {
+		colour = attrColour * imgColour;
 	}
-	else if (mode == 1) colour = attrColour;
-	else if (mode == 2) colour = imgColour;
+	else if (texMode == 1) {
+		colour = (attrColour * 0.5) + (imgColour * 0.5);
+	}
+	else if (texMode == 2) {
+		colour = attrColour;
+	}
+	else if (texMode == 3) {
+		colour = imgColour;
+	}
 }

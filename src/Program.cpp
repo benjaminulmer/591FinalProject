@@ -52,26 +52,44 @@ void Program::setupWindow() {
 // Initializes all attribute-based textures
 void Program::setupTextures() {
 	std::vector<GLuint> orientationTextures;
-	orientationTextures.push_back(renderEngine->loadTexture("./textures/attribute/orientation/greyscale.png"));
-	orientationTextures.push_back(renderEngine->loadTexture("./textures/attribute/orientation/fig-10b.png"));
-	orientationTextures.push_back(renderEngine->loadTexture("./textures/attribute/orientation/fig-10c.png"));
-	orientationTextures.push_back(renderEngine->loadTexture("./textures/attribute/orientation/fig-10d.png"));
-	orientationTextures.push_back(renderEngine->loadTexture("./textures/attribute/orientation/fig-11b.png"));
-	orientationTextures.push_back(renderEngine->loadTexture("./textures/attribute/orientation/fig-11c.png"));
-	orientationTextures.push_back(renderEngine->loadTexture("./textures/attribute/orientation/fig-11d.png"));
+	orientationTextures.push_back(renderEngine->loadTexture("./textures/attribute/orientation/colour/fig-10b.png"));
+	orientationTextures.push_back(renderEngine->loadTexture("./textures/attribute/orientation/colour/fig-10c.png"));
+	orientationTextures.push_back(renderEngine->loadTexture("./textures/attribute/orientation/colour/fig-10d.png"));
+	orientationTextures.push_back(renderEngine->loadTexture("./textures/attribute/orientation/colour/fig-11b.png"));
+	orientationTextures.push_back(renderEngine->loadTexture("./textures/attribute/orientation/colour/fig-11c.png"));
+	orientationTextures.push_back(renderEngine->loadTexture("./textures/attribute/orientation/colour/fig-11d.png"));
+
+	std::vector<GLuint> orientationTexturesGrey;
+	orientationTexturesGrey.push_back(renderEngine->loadTexture("./textures/attribute/orientation/greyscale/fig-10b.png"));
+	orientationTexturesGrey.push_back(renderEngine->loadTexture("./textures/attribute/orientation/greyscale/fig-10c.png"));
+	orientationTexturesGrey.push_back(renderEngine->loadTexture("./textures/attribute/orientation/greyscale/fig-10d.png"));
+	orientationTexturesGrey.push_back(renderEngine->loadTexture("./textures/attribute/orientation/greyscale/fig-11b.png"));
+	orientationTexturesGrey.push_back(renderEngine->loadTexture("./textures/attribute/orientation/greyscale/fig-11c.png"));
+	orientationTexturesGrey.push_back(renderEngine->loadTexture("./textures/attribute/orientation/greyscale/fig-11d.png"));
 
 	std::vector<GLuint> depthTextures;
-	depthTextures.push_back(renderEngine->loadTexture("./textures/attribute/depth/fig-7b.png"));
-	depthTextures.push_back(renderEngine->loadTexture("./textures/attribute/depth/fig-7c.png"));
-	depthTextures.push_back(renderEngine->loadTexture("./textures/attribute/depth/fig-7d.png"));
-	depthTextures.push_back(renderEngine->loadTexture("./textures/attribute/depth/fig-8a.png"));
-	depthTextures.push_back(renderEngine->loadTexture("./textures/attribute/depth/fig-8b.png"));
-	depthTextures.push_back(renderEngine->loadTexture("./textures/attribute/depth/fig-9b.png"));
-	depthTextures.push_back(renderEngine->loadTexture("./textures/attribute/depth/fig-9c.png"));
-	depthTextures.push_back(renderEngine->loadTexture("./textures/attribute/depth/fig-9e.png"));
-	depthTextures.push_back(renderEngine->loadTexture("./textures/attribute/depth/fig-9f.png"));
+	depthTextures.push_back(renderEngine->loadTexture("./textures/attribute/depth/colour/fig-7b.png"));
+	depthTextures.push_back(renderEngine->loadTexture("./textures/attribute/depth/colour/fig-7c.png"));
+	depthTextures.push_back(renderEngine->loadTexture("./textures/attribute/depth/colour/fig-7d.png"));
+	depthTextures.push_back(renderEngine->loadTexture("./textures/attribute/depth/colour/fig-8a.png"));
+	depthTextures.push_back(renderEngine->loadTexture("./textures/attribute/depth/colour/fig-8b.png"));
+	depthTextures.push_back(renderEngine->loadTexture("./textures/attribute/depth/colour/fig-9b.png"));
+	depthTextures.push_back(renderEngine->loadTexture("./textures/attribute/depth/colour/fig-9c.png"));
+	depthTextures.push_back(renderEngine->loadTexture("./textures/attribute/depth/colour/fig-9e.png"));
+	depthTextures.push_back(renderEngine->loadTexture("./textures/attribute/depth/colour/fig-9f.png"));
 
-	renderEngine->setTextures(orientationTextures, depthTextures);
+	std::vector<GLuint> depthTexturesGrey;
+	depthTexturesGrey.push_back(renderEngine->loadTexture("./textures/attribute/depth/greyscale/fig-7b.png"));
+	depthTexturesGrey.push_back(renderEngine->loadTexture("./textures/attribute/depth/greyscale/fig-7c.png"));
+	depthTexturesGrey.push_back(renderEngine->loadTexture("./textures/attribute/depth/greyscale/fig-7d.png"));
+	depthTexturesGrey.push_back(renderEngine->loadTexture("./textures/attribute/depth/greyscale/fig-8a.png"));
+	depthTexturesGrey.push_back(renderEngine->loadTexture("./textures/attribute/depth/greyscale/fig-8b.png"));
+	depthTexturesGrey.push_back(renderEngine->loadTexture("./textures/attribute/depth/greyscale/fig-9b.png"));
+	depthTexturesGrey.push_back(renderEngine->loadTexture("./textures/attribute/depth/greyscale/fig-9c.png"));
+	depthTexturesGrey.push_back(renderEngine->loadTexture("./textures/attribute/depth/greyscale/fig-9e.png"));
+	depthTexturesGrey.push_back(renderEngine->loadTexture("./textures/attribute/depth/greyscale/fig-9f.png"));
+
+	renderEngine->setTextures(orientationTextures, orientationTexturesGrey, depthTextures, depthTexturesGrey);
 }
 
 void Program::loadObjects() {
@@ -90,7 +108,7 @@ void Program::loadObjects() {
 	objects.push_back(o);
 
 	// These two don't have textures associated with the models
-	objects.push_back(ContentLoading::createRenderable("./models/tree.obj"));
+	objects.push_back(ContentLoading::createRenderable("./models/Tree.obj"));
 	objects.push_back(ContentLoading::createRenderable("./models/Castle.obj"));
 
 	for (Renderable* r : objects) {

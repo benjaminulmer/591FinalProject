@@ -49,8 +49,10 @@ public:
 	GLuint edgeVertexBuffer;
 
 	void updateContourBounds(int lower, int upper);
+	void updateLineThickness(float inc);
 	int getLowerCountour() {return contourLower;}
 	int getUpperCountour() {return contourUpper;}
+	float getLineThickness() {return lineThickness;}
 	void initEdgeBuffer();
 	void populateEdgeBuffer(glm::vec3 eye);
 	void clearEdgeBuffer();
@@ -63,6 +65,7 @@ private:
 	std::vector<std::list<Node>> edgeBuffer;
 	int contourLower = 65;
 	int contourUpper = 165;
+	float lineThickness = 8.0f;
 
 	void insertEdge(unsigned int vertex1, unsigned int vertex2, std::vector<std::list<glm::vec3>>& tempBuffer, glm::vec3 normal);
 	void updateEdge(unsigned int vertex1, unsigned int vertex2, Facing);

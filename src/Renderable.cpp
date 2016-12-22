@@ -29,6 +29,14 @@ void Renderable::updateContourBounds(int lower, int upper) {
 	std::cout << "Lower contour threshold: " << contourLower << "\tUpper contour threshold: " << contourUpper << std::endl;
 }
 
+//
+void Renderable::updateLineThickness(float inc) {
+	if (lineThickness + inc >= 0.5) {
+		lineThickness += inc;
+	}
+	std::cout << "Line thickness: " << lineThickness << std::endl;
+}
+
 // Inserts edge into edge buffer if it is not already present
 void Renderable::insertEdge(unsigned int vertex1, unsigned int vertex2, std::vector<std::list<glm::vec3>>& tempBuffer, glm::vec3 normal) {
 	bool found = false;

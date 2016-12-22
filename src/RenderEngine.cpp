@@ -1,8 +1,8 @@
 #include "RenderEngine.h"
 
 RenderEngine::RenderEngine(GLFWwindow* window, Camera* camera) :
-	window(window),textureMode(TextureMode::COMBINED), attributeMode(AttributeMode::ORIENTATION),
-	lineDrawing(true), r(1.0), camera(camera), orientationID(0), depthID(0), objectID(0) {
+	window(window),textureMode(TextureMode::MULTIPLICATIVE), attributeMode(AttributeMode::ORIENTATION),
+	colourMode(ColourMode::GREYSCALE), lineDrawing(true), r(1.0), camera(camera), orientationID(0), depthID(0), objectID(0) {
 
 	int width, height;
 	glfwGetWindowSize(window, &width, &height);
@@ -18,6 +18,7 @@ RenderEngine::RenderEngine(GLFWwindow* window, Camera* camera) :
 	// If you change state you must change back to default after
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_LINE_SMOOTH);
+	glPointSize(30.0f);
 	glClearColor(0.3, 0.3, 0.4, 0.0);
 }
 
@@ -34,20 +35,21 @@ void RenderEngine::render() {
 	glBindVertexArray(renderable.vao);
 	glUseProgram(mainProgram);
 
-	//Bind the texture
-	bool multiply;
-	if (orientationTextures[orientationID] == 1) {
-		multiply = true;
-	}
-	else {
-		multiply = false;
-	}
-
 	if (attributeMode == AttributeMode::ORIENTATION) {
-		Texture::bind2DTexture(mainProgram, orientationTextures[orientationID], std::string("attr"));
+		if (colourMode == ColourMode::COLOUR) {
+			Texture::bind2DTexture(mainProgram, orientationTextures[orientationID], std::string("attr"));
+		}
+		else {
+			Texture::bind2DTexture(mainProgram, orientationTexturesGrey[orientationID], std::string("attr"));
+		}
 	}
 	else {
-		Texture::bind2DTexture(mainProgram, depthTextures[depthID], std::string("attr"));
+		if (colourMode == ColourMode::COLOUR) {
+			Texture::bind2DTexture(mainProgram, depthTextures[depthID], std::string("attr"));
+		}
+		else {
+			Texture::bind2DTexture(mainProgram, depthTexturesGrey[depthID], std::string("attr"));
+		}
 	}
 
 	if (renderable.textureID == 0) {
@@ -65,11 +67,9 @@ void RenderEngine::render() {
 	glUniformMatrix4fv(glGetUniformLocation(mainProgram, "modelView"), 1, GL_FALSE, glm::value_ptr(modelView));
 	glUniformMatrix4fv(glGetUniformLocation(mainProgram, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 	glUniform3fv(glGetUniformLocation(mainProgram, "lightPos"), 1, glm::value_ptr(lightPos));
-	glUniform1i(glGetUniformLocation(mainProgram, "mode"), (int)textureMode);
-	glUniform1i(glGetUniformLocation(mainProgram, "multiply"), multiply);
+	glUniform1i(glGetUniformLocation(mainProgram, "texMode"), (int)textureMode);
 	glUniform1i(glGetUniformLocation(mainProgram, "attrMode"), (int)attributeMode);
 	glUniform1f(glGetUniformLocation(mainProgram, "R"), r);
-
 
 	glDrawElements(GL_TRIANGLES, renderable.drawFaces.size(), GL_UNSIGNED_SHORT, (void*)0);
 	glBindVertexArray(0);
@@ -100,7 +100,7 @@ void RenderEngine::renderLines(Renderable& renderable) {
 				glm::vec3 camPos = camera->getPosition();
 				glm::vec3 point = renderable.verts[n.vertex];
 				float distance = glm::length(camPos - point);
-				glLineWidth(7.0f / distance);
+				glLineWidth(renderable.getLineThickness() / distance);
 
 				glUniformMatrix4fv(glGetUniformLocation(lineProgram, "view"), 1, GL_FALSE, glm::value_ptr(view));
 				glUniformMatrix4fv(glGetUniformLocation(lineProgram, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
@@ -212,9 +212,13 @@ unsigned int RenderEngine::loadTexture(std::string filename) {
 	return id;
 }
 
-void RenderEngine::setTextures(std::vector<GLuint>& orientationTexs, std::vector<GLuint>& depthTexs) {
+void RenderEngine::setTextures(std::vector<GLuint>& orientationTexs, std::vector<GLuint>& orientationTexsGS,
+	                           std::vector<GLuint>& depthTexs, std::vector<GLuint>& depthTexsGS) {
+
 	orientationTextures = std::vector<GLuint>(orientationTexs);
+	orientationTexturesGrey = std::vector<GLuint>(orientationTexsGS);
 	depthTextures = std::vector<GLuint>(depthTexs);
+	depthTexturesGrey = std::vector<GLuint>(depthTexsGS);
 }
 
 void RenderEngine::setObjects(std::vector<Renderable*> objs) {
@@ -233,19 +237,34 @@ void RenderEngine::updateLightPos(glm::vec3 add) {
 }
 
 // Switches between attribute and image-based texturing modes
-void RenderEngine::setMode(TextureMode newMode) {
+void RenderEngine::setTextureMode(TextureMode newMode) {
 	textureMode = newMode;
+	if (textureMode == TextureMode::MULTIPLICATIVE) std::cout << "Combining textures multiplicatively" << std::endl;
+	else if (textureMode == TextureMode::ADDITIVE) std::cout << "Combining textures additively" << std::endl;
+	else if (textureMode == TextureMode::ATTRIBUTE) std::cout << "Only showing attribute-based texture" << std::endl;
+	else if (textureMode == TextureMode::IMAGE) std::cout << "Only showing image-based texture" << std::endl;
 }
 
 // Switches between orientation and depth-based attribute mapping modes
 void RenderEngine::toggleAttributeMapMode() {
 	if (attributeMode == AttributeMode::DEPTH) {
 		attributeMode = AttributeMode::ORIENTATION;
-		std::cout << "Now in orientation-based mode" << std::endl;
+		std::cout << "Now using orientation-based textures" << std::endl;
 	}
 	else {
 		attributeMode = AttributeMode::DEPTH;
-		std::cout << "Now in depth-based mode" << std::endl;
+		std::cout << "Now using depth-based textures" << std::endl;
+	}
+}
+
+void RenderEngine::toggleColourMode() {
+	if (colourMode == ColourMode::COLOUR) {
+		colourMode = ColourMode::GREYSCALE;
+		std::cout << "Now using greyscale version of textures" << std::endl;
+	}
+	else {
+		colourMode = ColourMode::COLOUR;
+		std::cout << "Now using coloured version of textures" << std::endl;
 	}
 }
 
@@ -285,6 +304,8 @@ Renderable* RenderEngine::swapObject(int inc) {
 // Toggles line drawing on and off
 void RenderEngine::toggleLineDrawing() {
 	lineDrawing = !lineDrawing;
+	if (lineDrawing == true) std::cout << "Line drawing on" << std::endl;
+	else std::cout << "Line drawing off" << std::endl;
 }
 
 void RenderEngine::updateR(float inc) {
