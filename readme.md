@@ -1,3 +1,8 @@
+# Attribute-Based Toon Shading with Feature Lines
+Created for CPSC 591 (Rendering) at the University of Calgary
+
+Project Report: https://docs.google.com/document/d/1Dj_-SBweHE-X1OMhRRCxWBiqAyI7QMcfnIsm-22z0HU/edit?usp=sharing
+
 Controls
 ========
 **Light Controls:**  
